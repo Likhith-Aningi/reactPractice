@@ -4,6 +4,7 @@ import Footer from "./components/Footer.jsx";
 import Food from "./components/Food.jsx";
 import Card from "./components/Card.jsx";
 import Condition from "./components/ConditionlGreeting.jsx";
+import GetData from "./components/GetData.jsx";
 function App() {
   return (
     <div className="app">
@@ -17,6 +18,7 @@ function App() {
       <Condition isAllowed={true} name='japan'/>
       <Condition isAllowed={true} />
       <Condition />
+      <GetData/>
       <Footer />
     </div>
   );
