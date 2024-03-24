@@ -1,10 +1,22 @@
-.app{
+.app , .app-dark{
     overflow: auto;
+}
+.app-dark{
+    color:rgb(238, 232, 223);
+    background-color: #1d1c1c;
 }
 .card{
     border: 1px solid rgb(3, 26, 1);
     width: 15rem;
     box-shadow: 5px 3px 5px rgb(198, 42, 42) ;
+    padding: 0 0 0 10px;
+    display: inline-block;
+    margin: 10px;
+}
+.app-dark .card{
+    border: 1px solid rgb(255, 255, 254);
+    width: 15rem;
+    box-shadow: 5px 3px 5px rgb(198, 180, 42) ;
     padding: 0 0 0 10px;
     display: inline-block;
     margin: 10px;
@@ -20,6 +32,15 @@
      width: 100%;
      background-color: #333;
      color: white;
+     text-align: center;
+     padding: 20px 0;
+}
+.app-dark footer{
+    left: 0;
+     bottom: 0;
+     width: 100%;
+     background-color: #e2d9d9;
+     color: rgb(35, 31, 31);
      text-align: center;
      padding: 20px 0;
 }

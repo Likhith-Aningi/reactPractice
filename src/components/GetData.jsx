@@ -37,9 +37,9 @@ function GetData() {
       clear
     </button>
   );
-  const fetchData = async (thing = false) => {
+  const fetchData = async (postCall = false) => {
     try {
-      const resp = thing
+      const resp = postCall
         ? await RestClient.post("likit/test/getJSON")
         : await RestClient.get("likit/test/getJSON", null, null);
       console.log(resp);
