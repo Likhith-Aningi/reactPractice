@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import ThemeContext from "./ThemeContext";
-import { flushSync } from "react-dom";
+import { NavLink } from "react-router-dom";
 function Header() {
   const style = {
     display: "flex",
-    // justifyContent:'space-evenly',
     whiteSpace: "no-wrap",
+    listStyleType:"circle",
   };
   const liStyle = {
     marginLeft: "20px",
@@ -13,11 +13,11 @@ function Header() {
   const { theme, setTheme } = useContext(ThemeContext);
   return (
     <>
-      <h1>This is header</h1>
+      <h1 style={{ textAlign: 'center' }}>Welcome to my Learning Page</h1>
       <ul style={style}>
-        <li>Home</li>
-        <li style={liStyle}>About</li>
-        <li style={liStyle}>Contact</li>
+        <li><NavLink to="/">Home</NavLink></li>
+        <li style={liStyle}><NavLink to="/about">About</NavLink></li>
+        <li style={liStyle}><NavLink to="/miniProjects">MiniProjects</NavLink></li>
         <li style={{listStyleType:'none',marginRight:'20px',marginLeft:'auto'}}><label>
         <input
           type="checkbox"

@@ -32,13 +32,13 @@ function FormChanges() {
       <hr></hr>
       <h3>Select Pizza Size</h3>
 
-      <input onChange={e=>setRadio('regular')} type="radio" name="topping" value={radio} id="regular" />
+      <input defaultChecked={radio === 'regular'} onChange={e=>setRadio('regular')} type="radio" name="topping" value={radio} id="regular" />
       <label htmlFor="regular">Regular</label>
 
-      <input type="radio" name="topping" value={radio} onChange={e=>setRadio('medium')} id="medium" />
+      <input defaultChecked={radio === 'medium'} type="radio" name="topping" value={radio} onChange={e=>setRadio('medium')} id="medium" />
       <label htmlFor="medium">Medium</label>
 
-      <input type="radio" name="topping" value={radio} id="large" onChange={e=>setRadio('large')} />
+      <input defaultChecked={radio === 'large'} type="radio" name="topping" value={radio} id="large" onChange={e=>setRadio('large')} />
       <label htmlFor="large">Large</label>
       <p>selected pizza size: {radio}</p>
     </div>
