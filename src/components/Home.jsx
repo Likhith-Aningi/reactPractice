@@ -4,6 +4,7 @@ import Card from "./Card.jsx";
 import Condition from "./ConditionlGreeting.jsx";
 import GetData from "./GetData.jsx";
 import FormChanges from "./FormChanges.jsx";
+import Updater from './Updater.jsx';
 function Home() {
   return (
     <div>
@@ -18,6 +19,7 @@ function Home() {
         <Condition />
         <GetData />
         <FormChanges />
+        <Updater/>
     </div>
   )
 }
