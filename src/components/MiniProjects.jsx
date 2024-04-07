@@ -17,7 +17,7 @@ function MiniProjects() {
     }}>
         <select defaultValue={currentMiniProject} onChange={e=>setCurrentMiniProject(e.target.value)}>
             <option value='colorPicker'>color picker</option>
-            <option value='todoList'>Todo List</option>
+            <option value='todoList'>Todo App</option>
         </select>
         <div style={{padding:"40px"}}>
             {availableProjects[currentMiniProject]}
