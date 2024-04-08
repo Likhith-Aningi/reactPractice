@@ -89,3 +89,25 @@ a.active {
   max-width: 800px;
   overflow-x: auto;
 }
+.digital-clock-container{
+  background-image: url(./assets/zootman.jpg);
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center;
+  background-attachment: fixed;
+  width: 100vw;
+  height: 60vh;
+}
+.digital-clock-container h3{
+  padding: 20px;
+  text-align: center;
+}
+.digital-clock {
+  font-size: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25vh;
+  backdrop-filter: blur(3px);
+  text-shadow: 3px 3px 5px hsla(0,0%, 0%, 0.75);
+}
