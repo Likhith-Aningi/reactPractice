@@ -7,16 +7,16 @@ function DigitalClock() {
         const minutes = time.getMinutes();
         const seconds = time.getSeconds();
         const meridiem = hours < 12 ? 'AM' : 'PM'
-        return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)} ${meridiem}`;
+        return `${padZero(hours % 12 || 12)}:${padZero(minutes)}:${padZero(seconds)} ${meridiem}`;
     }
     function padZero(num) {
         return (num < 10 ? '0' : '') + num;
     }
-    useEffect(()=>{
-        const timeUpdate=setInterval(()=>{
+    useEffect(() => {
+        const timeUpdate = setInterval(() => {
             setTime(new Date());
-        },1000);
-        return ()=>{
+        }, 1000);
+        return () => {
             //CLEAN UP WHEN COMPONENT IS DISMOUNTED OR RE-RENDERED
             clearInterval(timeUpdate);
         }

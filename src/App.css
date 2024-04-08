@@ -99,7 +99,7 @@ a.active {
   height: 60vh;
 }
 .digital-clock-container h3{
-  padding: 20px;
+  padding: 20px;  
   text-align: center;
 }
 .digital-clock {
@@ -109,5 +109,26 @@ a.active {
   align-items: center;
   height: 25vh;
   backdrop-filter: blur(3px);
-  text-shadow: 3px 3px 5px hsla(0,0%, 0%, 0.75);
+  text-shadow: 3px 3px 5px hsla(46, 88%, 46%, 0.75);
+}
+.box{
+  padding: 20px;
+  margin: 10px;
+  border: 2px solid rgb(35, 31, 31);
+}
+.app-dark .box{
+  border-color: #e2d9d9;
+}
+.stop-watch-controls{
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+.stop-watch-controls input{
+  margin: 20px;
+  padding: 15px;
+  border-radius: 20px;
+  font-size: 2rem;
+  font-style: monospace;
+  border: none;
 }

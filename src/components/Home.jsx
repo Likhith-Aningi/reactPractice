@@ -8,6 +8,7 @@ import Updater from "./Updater.jsx";
 import ArrayUpdater from "./ArrayUpdater.jsx";
 import ObjectUpdater from "./ObjectUpdater.jsx";
 import ArrayOfObjectsUpdater from "./ArrayOfObjectsUpdater.jsx";
+import ContextExapmleA from "./ContextExapmleA.jsx";
 function Home() {
   return (
     <div>
@@ -26,6 +27,7 @@ function Home() {
       <ArrayUpdater />
       <ObjectUpdater />
       <ArrayOfObjectsUpdater />
+      <ContextExapmleA/>
     </div>
   );
 }
