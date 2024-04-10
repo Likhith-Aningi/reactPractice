@@ -18,7 +18,7 @@ function MiniProjects() {
             alignItems: 'center',
             flexDirection: 'column',
         }}>
-            <select defaultValue={currentMiniProject} onChange={e => setCurrentMiniProject(e.target.value)}>
+            <select className='dropdownoptions' defaultValue={currentMiniProject} onChange={e => setCurrentMiniProject(e.target.value)}>
                 <option value='colorPicker'>color picker</option>
                 <option value='todoList'>Todo App</option>
                 <option value='digitalClock'>Digital Clock</option>

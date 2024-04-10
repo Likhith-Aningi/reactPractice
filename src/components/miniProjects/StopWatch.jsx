@@ -46,22 +46,24 @@ function StopWatch() {
 
     }
     return (
-        <div className='digital-clock-container'>
+        <div>
             <h3>Stop watch</h3>
             <div className='digital-clock'>{formatTime()}</div>
             <div className="stop-watch-controls">
-                <input type='button' value="Start" onClick={() => start()} />
-                <input type='button' value="Stop" onClick={() => stop()} />
+                <input type='button' value="Start" onClick={() => start()} disabled={isRunning} />
+                <input type='button' value="Stop" onClick={() => stop()} disabled={!isRunning} />
                 <input type='button' value="Reset" onClick={() => reset()} />
-                <input type='button' value="Flag" onClick={() => flag()} />
+                <input type='button' value="Flag" onClick={() => flag()} disabled={!isRunning}/>
             </div>
-            <ul>
-                {flags.map((flag, index) => (
-                    <li className="todo-task" key={index}>
-                        <span className="todo-text">{flag}</span>
-                    </li>
-                ))}
-            </ul>
+            <div>
+                <ul>
+                    {flags.map((flag, index) => (
+                        <li className="todo-task" key={index}>
+                            <span className="todo-text">{flag}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     )
 }

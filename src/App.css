@@ -64,11 +64,13 @@ a.active {
 .app-dark a.active {
   color: #ff6666;
 }
-.todo-input{
+
+.todo-input {
   font-size: 1rem;
   border: 1px solid rgb(37, 32, 32);
 }
-.todo-task{
+
+.todo-task {
   padding: 10px;
   font-size: 1.4rem;
   font-weight: bold;
@@ -79,29 +81,34 @@ a.active {
   min-width: 300px;
   border-radius: 15px;
 }
-.app-dark .todo-task{
+
+.app-dark .todo-task {
   border: 3px solid rgb(167, 163, 163);
   background-color: #333;
 }
-.todo-text{
+
+.todo-text {
   flex: 1;
   margin-right: 40px;
   max-width: 800px;
   overflow-x: auto;
 }
-.digital-clock-container{
+
+.digital-clock-container {
   background-image: url(./assets/zootman.jpg);
   background-repeat: no-repeat;
-  background-size:cover;
+  background-size: cover;
   background-position: center;
   background-attachment: fixed;
   width: 100vw;
   height: 60vh;
 }
-.digital-clock-container h3{
-  padding: 20px;  
+
+.digital-clock-container h3 {
+  padding: 20px;
   text-align: center;
 }
+
 .digital-clock {
   font-size: 6rem;
   display: flex;
@@ -111,24 +118,86 @@ a.active {
   backdrop-filter: blur(3px);
   text-shadow: 3px 3px 5px hsla(46, 88%, 46%, 0.75);
 }
-.box{
+
+.box {
   padding: 20px;
   margin: 10px;
   border: 2px solid rgb(35, 31, 31);
 }
-.app-dark .box{
+
+.app-dark .box {
   border-color: #e2d9d9;
 }
-.stop-watch-controls{
+
+.stop-watch-controls {
   display: flex;
   justify-content: center;
-  margin: 10px;
-}
-.stop-watch-controls input{
   margin: 20px;
-  padding: 15px;
+  border: 3px solid black;
   border-radius: 20px;
-  font-size: 2rem;
-  font-style: monospace;
+  padding: 14px;
+  transition: border-color 0.8s ease;
+}
+
+.app-dark .stop-watch-controls {
+  border-color: white;
+}
+
+.stop-watch-controls input {
+  margin: 0 10px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-family: 'Arial', sans-serif;
+  font-weight: bolder;
   border: none;
+  cursor: pointer;
+  transition: color 0.8s ease;
+}
+
+.stop-watch-controls input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stop-watch-controls input[value="Start"] {
+  background-color: #38d83e;
+  color: white;
+}
+
+.stop-watch-controls input[value="Stop"] {
+  background-color: #f83d2f;
+  color: white;
+}
+
+.stop-watch-controls input[value="Reset"] {
+  background-color: #0095c7;
+  color: white;
+}
+
+.stop-watch-controls input[value="Flag"] {
+  background-color: #ffbf00;
+  color: white;
+}
+
+.app-dark .stop-watch-controls input {
+  color: black;
+}
+
+.stop-watch-controls input:hover {
+  background-color: #ddd;
+}
+
+.dropdownoptions {
+  border-radius: 12px;
+  padding: 8px 10px;
+  border-style: none;
+  font-size: 15px;
+  font-weight: normal;
+  text-transform: capitalize;
+}
+
+.app-dark .dropdownoptions {
+  color: #e2d9d9;
+  background-color: #413e3e;
 }
