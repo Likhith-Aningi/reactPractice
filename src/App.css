@@ -148,7 +148,7 @@ a.active {
   padding: 12px 20px;
   border-radius: 10px;
   font-size: 1.2rem;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-weight: bolder;
   border: none;
   cursor: pointer;
@@ -200,4 +200,13 @@ a.active {
 .app-dark .dropdownoptions {
   color: #e2d9d9;
   background-color: #413e3e;
+}
+@media screen and (max-width: 480px) {
+  .digital-clock {
+    font-size: 3rem;
+  }
+  .stop-watch-controls input {
+    margin: 0 9px;
+    padding: 12px 7px;
+  }
 }
