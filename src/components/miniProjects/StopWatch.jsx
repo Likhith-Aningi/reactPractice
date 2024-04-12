@@ -47,7 +47,7 @@ function StopWatch() {
     }
     return (
         <div>
-            <h3>Stop watch</h3>
+            <h3 style={{textAlign:'center'}}>Stop watch</h3>
             <div className='digital-clock'>{formatTime()}</div>
             <div className="stop-watch-controls">
                 <input type='button' value="Start" onClick={() => start()} disabled={isRunning} />
