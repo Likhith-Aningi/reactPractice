@@ -4,7 +4,7 @@ import TodoList from './miniProjects/TodoList';
 import DigitalClock from './miniProjects/DigitalClock';
 import StopWatch from './miniProjects/StopWatch';
 function MiniProjects() {
-    const [currentMiniProject, setCurrentMiniProject] = useState('colorPicker');
+    const [currentMiniProject, setCurrentMiniProject] = useState('stopWatch');
     const availableProjects = {
         colorPicker: <ColorPicker />,
         todoList: <TodoList />,
