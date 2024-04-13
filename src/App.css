@@ -47,6 +47,7 @@
 
 a {
   text-decoration: none;
+  font-family: Tahoma, sans-serif;
 }
 
 .app-dark a {
@@ -58,11 +59,15 @@ a {
 }
 
 a.active {
-  color: #ff0000;
+  color: #0f5;
+  background-color: blue;
+  padding: 5px 10px 5px 10px;
+  border-radius: 20px;
 }
 
 .app-dark a.active {
   color: #ff6666;
+  background-color: #2b2bc6;
 }
 
 .todo-input {
@@ -201,12 +206,41 @@ a.active {
   color: #e2d9d9;
   background-color: #413e3e;
 }
+.header {
+  display: flex;
+  list-style-type: none;
+}
+.header li:not(:first-child) {
+  margin-left: 20px;
+}
+.hamburger-menu {
+  display: none;
+}
 @media screen and (max-width: 480px) {
+  /* for mobile view*/
   .digital-clock {
     font-size: 3rem;
   }
   .stop-watch-controls input {
     margin: 0 9px;
     padding: 12px 7px;
+  }
+  .header {
+    display: none;
+    flex-direction: column;
+    text-align: center;
+    padding-left: 0px;
+  }
+  .header.show-menu {
+    display: flex;
+  }
+  .header li:not(:first-child) {
+    margin-left: 0px;
+    padding-top: 8px;
+  }
+  .hamburger-menu {
+    display: block;
+    cursor: pointer;
+    padding: 10px;
   }
 }
