@@ -34,25 +34,29 @@ function TodoList() {
   }
   return (
     <div>
-      <h3 style={{textAlign:'center'}}>To Do App</h3>
-      <span style={{display:"flex",justifyContent:'center'}}>
-      <input
-        ref={inputArea}
-        className="todo-input"
-        type="text"
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-        placeholder="Enter task"
-      />
-      <input
-        type="button"
-        value="➕"
-        style={{backgroundColor:'#07f707'}}
-        onClick={() => addTask()}
-        title="Add task"
-      />
+      <h3 style={{ textAlign: "center" }}>To Do App</h3>
+      <span style={{ display: "flex", justifyContent: "center" }}>
+        <input
+          ref={inputArea}
+          className="todo-input"
+          type="text"
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+          placeholder="Enter task"
+        />
+        <input
+          type="button"
+          value="➕"
+          style={{
+            backgroundColor: "#07f707",
+            borderRadius: "50%",
+            margin: "14px",
+          }}
+          onClick={() => addTask()}
+          title="Add task"
+        />
       </span>
-      <ul>
+      <ul style={{ padding: "0px" }}>
         {tasks.map((task, index) => (
           <li className="todo-task" key={index}>
             <span className="todo-text">{task}</span>
@@ -60,21 +64,33 @@ function TodoList() {
               type="button"
               onClick={() => moveUp(index)}
               value="👆"
-              style={{backgroundColor:'rgb(39, 122, 211)',margin:'3px'}}
+              style={{
+                backgroundColor: "rgb(39, 122, 211)",
+                margin: "3px",
+                borderRadius: "20px",
+              }}
               title="Move up"
             />
             <input
               type="button"
               onClick={() => moveDown(index)}
               value="👇"
-              style={{backgroundColor:'rgb(39, 122, 211)',margin:'3px'}}
+              style={{
+                backgroundColor: "rgb(39, 122, 211)",
+                margin: "3px",
+                borderRadius: "20px",
+              }}
               title="Move down"
             />
             <input
               type="button"
               onClick={() => deleteTask(index)}
               value="🗑️"
-              style={{backgroundColor:'rgb(211, 39, 39)',margin:'3px'}}
+              style={{
+                backgroundColor: "rgb(211, 39, 39)",
+                margin: "3px",
+                borderRadius: "20px",
+              }}
               title="Delete task"
             />
           </li>

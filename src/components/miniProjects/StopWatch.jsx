@@ -56,7 +56,7 @@ function StopWatch() {
                 <input type='button' value="Flag" onClick={() => flag()} disabled={!isRunning}/>
             </div>
             <div>
-                <ul>
+                <ul style={{padding:'0px'}}>
                     {flags.map((flag, index) => (
                         <li className="todo-task" key={index}>
                             <span className="todo-text">{flag}</span>

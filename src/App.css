@@ -38,6 +38,7 @@
   text-align: center;
   padding: 20px 0;
   margin-top: 20px;
+  transition: background-color 0.5s ease-in-out,color 0.4s ease-out;
 }
 
 .app-dark .footer {
@@ -70,11 +71,23 @@ a.active {
   background-color: #2b2bc6;
 }
 
-.todo-input {
+.todo-input[type="text"] {
   font-size: 1rem;
-  border: 1px solid rgb(37, 32, 32);
+  border: 1px solid #ccc;
+  border-radius: 9px;
+  padding: 8px 12px;
+  margin: 10px;
+  width: 80%;
+  box-sizing: border-box;
 }
-
+.app-dark .todo-input[type="text"] {
+  color: #f4f4f4;
+  background-color: #333;
+}
+.todo-input:focus {
+  outline: none;
+  border-color: #07f707;
+}
 .todo-task {
   padding: 10px;
   font-size: 1.4rem;

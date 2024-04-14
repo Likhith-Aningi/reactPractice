@@ -1,14 +1,14 @@
 import React from "react";
-import Food from "./Food.jsx";
-import Card from "./Card.jsx";
-import Condition from "./ConditionlGreeting.jsx";
-import GetData from "./GetData.jsx";
-import FormChanges from "./FormChanges.jsx";
-import Updater from "./Updater.jsx";
-import ArrayUpdater from "./ArrayUpdater.jsx";
-import ObjectUpdater from "./ObjectUpdater.jsx";
-import ArrayOfObjectsUpdater from "./ArrayOfObjectsUpdater.jsx";
-import ContextExapmleA from "./ContextExapmleA.jsx";
+import Food from "./homeComponents/Food.jsx";
+import Card from "./homeComponents/Card.jsx";
+import Condition from "./homeComponents/ConditionlGreeting.jsx";
+import GetData from "./homeComponents/GetData.jsx";
+import FormChanges from "./homeComponents/FormChanges.jsx";
+import Updater from "./homeComponents/Updater.jsx";
+import ArrayUpdater from "./homeComponents/ArrayUpdater.jsx";
+import ObjectUpdater from "./homeComponents/ObjectUpdater.jsx";
+import ArrayOfObjectsUpdater from "./homeComponents/ArrayOfObjectsUpdater.jsx";
+import ContextExapmleA from "./homeComponents/ContextExapmleA.jsx";
 function Home() {
   return (
     <div>

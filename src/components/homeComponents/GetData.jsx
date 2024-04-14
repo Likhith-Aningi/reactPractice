@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import RestClient from "../services/RestClient.jsx";
+import RestClient from "../../services/RestClient.jsx";
 
 const buttonStyle = { marginRight: "5px" };
 function GetData() {
