@@ -20,7 +20,7 @@ function Header() {
   const moon = <img title="Togle to Dark Mode" src={Moon} />;
 
   return (
-    <>
+    <div>
       <h1 style={{ textAlign: "center" }}>Welcome to my Learning Page</h1>
       <span className="hamburger-menu" onClick={toggleMenu}>
         {showMenu ? "✕" : "☰"}
@@ -60,7 +60,7 @@ function Header() {
         </li>
       </ul>
       <hr />
-    </>
+    </div>
   );
 }
 export default Header;

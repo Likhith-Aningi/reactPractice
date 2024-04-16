@@ -2,6 +2,8 @@
 .app-dark {
   overflow: auto;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
   transition: color 0.3s ease, background-color 0.3s ease;
 }
 
@@ -30,14 +32,12 @@
 }
 
 .footer {
-  left: 0;
-  bottom: 0;
   width: 100%;
   background-color: #333;
   color: white;
   text-align: center;
   padding: 20px 0;
-  margin-top: 20px;
+  margin-top: auto;
   transition: background-color 0.5s ease-in-out,color 0.4s ease-out;
 }
 
