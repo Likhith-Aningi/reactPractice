@@ -37,6 +37,11 @@ function Header() {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/demos" onClick={toggleMenu}>
+            Demos
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/miniProjects" onClick={toggleMenu}>
             MiniProjects
           </NavLink>
