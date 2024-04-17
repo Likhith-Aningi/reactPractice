@@ -31,7 +31,7 @@ function Demo() {
     return (
       <div>
         <ToastContainer />
-        <h2>NO Component like that yet brother</h2>
+        <h2>NO Component like that yet brotha...</h2>
       </div>
     );
   }
