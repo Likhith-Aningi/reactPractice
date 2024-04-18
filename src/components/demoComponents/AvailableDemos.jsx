@@ -1,21 +1,45 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { UseMemoDemo } from "./demoExamps/UseMemoDemo";
 export const availableDemos = {
   useMemoDemo: <UseMemoDemo />,
 };
 function AvailableDemos() {
+  const nav = useNavigate();
+  const ref = useRef(null);
+  const handleClick = (event) => {
+    event.preventDefault();
+    ref.current.style.display = "block";
+    const to = event.currentTarget.getAttribute("href");
+    console.log(ref.current.style.display);
+    waitForLoader(ref.current, () => {
+      nav(to);
+    });
+  };
+  const waitForLoader = (element, callback) => {
+    const intervalId = setInterval(() => {
+      if (element.style.display === "block") {
+        clearInterval(intervalId);
+        callback();
+      }
+    }, 1);
+  };
+
   return (
     <div>
       <h4>AvailableDemos</h4>
       <ol>
         <li>
-          <Link to={`/demos/useMemoDemo`}>useMemo Demo</Link>
+          <Link to={`/demos/useMemoDemo`} onClick={(e) => handleClick(e)}>
+            useMemo Demo
+          </Link>
         </li>
         <li>
           <Link to={`/demos/useCallbackDemo`}>useCallback Demo</Link>
         </li>
       </ol>
+      <div className="loader" style={{ display: "none" }} ref={ref}>
+      </div>
     </div>
   );
 }
