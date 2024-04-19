@@ -1,8 +1,10 @@
 import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UseMemoDemo } from "./demoExamps/UseMemoDemo";
+import UseCallbackDemo from "./demoExamps/UseCallbackDemo";
 export const availableDemos = {
   useMemoDemo: <UseMemoDemo />,
+  useCallbackDemo: <UseCallbackDemo />,
 };
 function AvailableDemos() {
   const nav = useNavigate();
@@ -35,11 +37,15 @@ function AvailableDemos() {
           </Link>
         </li>
         <li>
-          <Link to={`/demos/useCallbackDemo`}>useCallback Demo</Link>
+          <Link to={`/demos/useCallbackDemo`} onClick={(e) => handleClick(e)}>
+            useCallback Demo
+          </Link>
+        </li>
+        <li>
+          <Link to={`/demos/useDemo`}>useDemo</Link>
         </li>
       </ol>
-      <div className="loader" style={{ display: "none" }} ref={ref}>
-      </div>
+      <div className="loader" style={{ display: "none" }} ref={ref}></div>
     </div>
   );
 }
