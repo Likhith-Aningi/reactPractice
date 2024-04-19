@@ -20,7 +20,7 @@ function Header() {
   const moon = <img title="Togle to Dark Mode" src={Moon} />;
 
   return (
-    <div>
+    <div className="header-wrapper">
       <h1 style={{ textAlign: "center" }}>Welcome to my Learning Page</h1>
       <span className="hamburger-menu" onClick={toggleMenu}>
         {showMenu ? "✕" : "☰"}

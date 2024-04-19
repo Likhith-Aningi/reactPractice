@@ -1,3 +1,8 @@
+:root {
+  --dark-color: rgb(238, 232, 223);
+  --dark-bg-color: #1d1c1c;
+  --bg-color:#fff;
+}
 .app,
 .app-dark {
   overflow: auto;
@@ -8,8 +13,8 @@
 }
 
 .app-dark {
-  color: rgb(238, 232, 223);
-  background-color: #1d1c1c;
+  color: var(--dark-color);
+  background-color: var(--dark-bg-color);
 }
 
 .card {
@@ -219,6 +224,14 @@ a.active {
 .app-dark .dropdownoptions {
   color: #e2d9d9;
   background-color: #413e3e;
+}
+.header-wrapper{
+  position: sticky;
+  top:-60px;
+  background-color: var(--bg-color);
+}
+.app-dark .header-wrapper{
+  background-color: var(--dark-bg-color);
 }
 .header {
   display: flex;
