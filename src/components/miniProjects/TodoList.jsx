@@ -5,7 +5,7 @@ function TodoList() {
   const [task, setTask] = useState("");
   const inputArea = useRef(null);
   function addTask() {
-    if (task === "") {
+    if (task.trim() === "") {
       alert("enter task and add");
       inputArea.current.focus();
       return;
