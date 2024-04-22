@@ -1,11 +1,13 @@
 import { useContext, useState } from "react";
-import ThemeContext from "./ThemeContext";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import Sun from "../assets/sun.svg";
 import Moon from "../assets/moon.svg";
+import Sun from "../assets/sun.svg";
+import ThemeContext from "./ThemeContext";
 function Header() {
   const { theme, setTheme } = useContext(ThemeContext);
   const [showMenu, setShowMenu] = useState(false);
+  const count = useSelector((state) => state.counter.value);
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -49,8 +51,16 @@ function Header() {
         <li
           style={{
             listStyleType: "none",
-            marginRight: "20px",
             marginLeft: "auto",
+            marginRight: "20px",
+          }}
+        >
+          {count !== 0 && <span>count is {count}</span>}
+        </li>
+        <li
+          style={{
+            listStyleType: "none",
+            marginRight: "20px",
           }}
         >
           <label>
