@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 function NotFound() {
@@ -9,7 +9,7 @@ function NotFound() {
     return () => {
       clearTimeout(timeOut);
     };
-  }, []);
+  });
   return (
     <div>
       <h1

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 const CallbackComponent = (props) => {
@@ -16,5 +16,6 @@ CallbackComponent.propTypes = {
   name: PropTypes.string,
   someStr: PropTypes.string,
   someFunc: PropTypes.func,
+  useMem:PropTypes.bool,
 };
 export default React.memo(CallbackComponent);

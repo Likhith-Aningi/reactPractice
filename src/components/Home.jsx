@@ -1,4 +1,3 @@
-import React from "react";
 import Food from "./homeComponents/Food.jsx";
 import Card from "./homeComponents/Card.jsx";
 import Condition from "./homeComponents/ConditionlGreeting.jsx";
@@ -27,7 +26,7 @@ function Home() {
       <ArrayUpdater />
       <ObjectUpdater />
       <ArrayOfObjectsUpdater />
-      <ContextExapmleA/>
+      <ContextExapmleA />
     </div>
   );
 }
