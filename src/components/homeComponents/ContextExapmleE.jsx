@@ -1,12 +1,9 @@
-import React, { useContext }  from 'react'
-import { BoxContext } from './ContextExapmleA';
+import { useContext } from "react";
+import { BoxContext } from "./ContextExapmleA";
 
 function ContextExapmleD() {
-  const context=useContext(BoxContext);
-  return (
-    <div className='box'>Box E access:{context.access}
-    </div>
-  )
+  const context = useContext(BoxContext);
+  return <div className="box">Box E access:{context.access}</div>;
 }
 
-export default ContextExapmleD
+export default ContextExapmleD;

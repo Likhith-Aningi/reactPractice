@@ -1,10 +1,9 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   decrement,
   increment,
-  reload,
   incrementByAmount,
+  reload,
 } from "../../../redux/Counter/counterSlice";
 function ReduxCounterDemo() {
   const count = useSelector((state) => state.counter.value);

@@ -1,9 +1,10 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import ThemeContext from "../ThemeContext";
 
 function ColorPicker() {
-  const {theme}=useContext(ThemeContext);
-  const [diffC,diffI]=theme==='dark'?['#000000','#FFFFFF']:['#FFFFFF','#000000'];
+  const { theme } = useContext(ThemeContext);
+  const [diffC, diffI] =
+    theme === "dark" ? ["#000000", "#FFFFFF"] : ["#FFFFFF", "#000000"];
   const [color, setColor] = useState(diffC);
   const [inverse, setInverse] = useState(diffI);
   const calculateInverseColor = (hexColor) => {
@@ -30,7 +31,8 @@ function ColorPicker() {
     transition: "0.7s ease",
     marginBottom: "25px",
     textAlign: "center",
-    border:'5px solid '+(theme==='dark'?'hsl(2,10%,80%)':'hsl(0,0%,40%)')
+    border:
+      "5px solid " + (theme === "dark" ? "hsl(2,10%,80%)" : "hsl(0,0%,40%)"),
   };
   return (
     <div className="color-picker">

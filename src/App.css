@@ -26,6 +26,10 @@
   margin: 10px;
   border-radius: 5%;
 }
+.card:hover{
+  filter: drop-shadow(0 0 2em #fb1010dc);
+  transition: filter 0.3s;
+}
 
 .app-dark .card {
   border: 1px solid rgb(255, 255, 254);
@@ -55,6 +59,8 @@
 a {
   text-decoration: none;
   font-family: Tahoma, sans-serif;
+  padding: 5px 10px 5px 10px;
+  border-radius: 20px;
 }
 
 .app-dark a {

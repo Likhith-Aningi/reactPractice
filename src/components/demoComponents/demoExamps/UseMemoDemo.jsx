@@ -1,4 +1,3 @@
-import React from "react";
 import MemoComponent from "./MemoComponent";
 export const UseMemoDemo = () => {
   const largeArr = new Array(30_000_000).fill(0).map((_, i) => {
@@ -13,7 +12,7 @@ export const UseMemoDemo = () => {
       </div>
       <h4>NotUsing Memo</h4>
       <div>
-        <MemoComponent largeArr={largeArr}/>
+        <MemoComponent largeArr={largeArr} />
       </div>
     </div>
   );

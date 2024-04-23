@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 function TodoList() {
   const [tasks, setTasks] = useState(["to do"]);

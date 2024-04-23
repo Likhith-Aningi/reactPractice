@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 // text,textarea,select,,radio
 function FormChanges() {
   const [name, setName] = useState("");
@@ -10,35 +10,65 @@ function FormChanges() {
   const handleTextChange = (e) => {
     setText(e.target.value);
   };
-  const style={
-    padding:'10px',
-  }
-  const [radio,setRadio]=useState('medium');
+  const style = {
+    padding: "10px",
+  };
+  const [radio, setRadio] = useState("medium");
   return (
     <div style={style}>
       <h3>Form inputs </h3>
-      <input type='text'value={name} onChange={(e) => handleNameChange(e)} />
+      <input type="text" value={name} onChange={(e) => handleNameChange(e)} />
       <p>Name is : {name}</p>
       <hr></hr>
-      <textarea style={{minWidth:'100px',minHeight:'50px',maxWidth:'300px',maxHeight:'100px'}} value={text} onChange={(e) => handleTextChange(e)} />
+      <textarea
+        style={{
+          minWidth: "100px",
+          minHeight: "50px",
+          maxWidth: "300px",
+          maxHeight: "100px",
+        }}
+        value={text}
+        onChange={(e) => handleTextChange(e)}
+      />
       <p>address is : {text}</p>
       <hr></hr>
-      <select name="select" id="" onChange={e=>setSelect(e.target.value)}>
+      <select name="select" id="" onChange={(e) => setSelect(e.target.value)}>
         <option value="">Select an option</option>
         <option value="csk">csk</option>
         <option value="mi">mi</option>
       </select>
-      <p>selected team: {select===''?'choose a team':select}</p>
+      <p>selected team: {select === "" ? "choose a team" : select}</p>
       <hr></hr>
       <h3>Select Pizza Size</h3>
 
-      <input defaultChecked={radio === 'regular'} onChange={e=>setRadio('regular')} type="radio" name="topping" value={radio} id="regular" />
+      <input
+        defaultChecked={radio === "regular"}
+        onChange={() => setRadio("regular")}
+        type="radio"
+        name="topping"
+        value={radio}
+        id="regular"
+      />
       <label htmlFor="regular">Regular</label>
 
-      <input defaultChecked={radio === 'medium'} type="radio" name="topping" value={radio} onChange={e=>setRadio('medium')} id="medium" />
+      <input
+        defaultChecked={radio === "medium"}
+        type="radio"
+        name="topping"
+        value={radio}
+        onChange={() => setRadio("medium")}
+        id="medium"
+      />
       <label htmlFor="medium">Medium</label>
 
-      <input defaultChecked={radio === 'large'} type="radio" name="topping" value={radio} id="large" onChange={e=>setRadio('large')} />
+      <input
+        defaultChecked={radio === "large"}
+        type="radio"
+        name="topping"
+        value={radio}
+        id="large"
+        onChange={() => setRadio("large")}
+      />
       <label htmlFor="large">Large</label>
       <p>selected pizza size: {radio}</p>
     </div>
