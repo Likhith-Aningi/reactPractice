@@ -59,6 +59,8 @@
 a {
   text-decoration: none;
   font-family: Tahoma, sans-serif;
+  padding: 5px 10px 5px 10px;
+  border-radius: 20px;
 }
 
 .app-dark a {

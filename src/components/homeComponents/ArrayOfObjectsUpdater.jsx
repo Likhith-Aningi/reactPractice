@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 function ArrayOfObjectsUpdater() {
   const [bikes, setBikes] = useState([]);
@@ -16,8 +16,8 @@ function ArrayOfObjectsUpdater() {
   }
   function addToList() {
     setBikes((b) => [...b, { name, model, year }]);
-    setName('');
-    setModel('');
+    setName("");
+    setModel("");
     setYear(new Date().getFullYear());
   }
   function removeBike(i) {
@@ -52,7 +52,11 @@ function ArrayOfObjectsUpdater() {
         {bikes.map((bike, index) => (
           <li key={index}>
             {bike.year} {bike.name} {bike.model}&nbsp;&nbsp;
-            <input type="button" value="remove" onClick={()=>removeBike(index)} />
+            <input
+              type="button"
+              value="remove"
+              onClick={() => removeBike(index)}
+            />
           </li>
         ))}
       </ul>

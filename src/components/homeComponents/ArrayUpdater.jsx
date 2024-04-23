@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 function ArrayUpdater() {
   const [food, setFood] = useState(["sai", "annamayya"]);
@@ -23,9 +23,9 @@ function ArrayUpdater() {
       <input type="text" id="japan" placeholder="enter food" />
       <br />
       &nbsp;&nbsp;
-      <input value="add" type="button" onClick={()=>handleAdd()} />
+      <input value="add" type="button" onClick={() => handleAdd()} />
       &nbsp;&nbsp;
-      <input value="clear" type="button" onClick={()=>clearFood()} />
+      <input value="clear" type="button" onClick={() => clearFood()} />
       <br />
     </div>
   );

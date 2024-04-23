@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { availableDemos } from "./AvailableDemos";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,14 +9,17 @@ function Demo() {
   const nav = useNavigate();
   const { theme } = useContext(ThemeContext);
   const timeOutRef = useRef(null);
-  const notify = () =>
-    toast.info("Going back to /demos in 10sec", {
-      autoClose: 10000,
-      pauseOnHover: false,
-      theme: theme,
-      position: "bottom-right",
-      onClose: ()=>clearTimeout(timeOutRef.current),
-    });
+  const notify = useCallback(
+    () =>
+      toast.info("Going back to /demos in 10sec", {
+        autoClose: 10000,
+        pauseOnHover: false,
+        theme: theme,
+        position: "bottom-right",
+        onClose: () => clearTimeout(timeOutRef.current),
+      }),
+    [theme]
+  );
   useEffect(() => {
     if (!availableDemos[demo]) {
       notify();
@@ -25,7 +28,7 @@ function Demo() {
       }, 10000); // redirecting to /demos after 10 secs
       return () => clearTimeout(timeOutRef.current);
     }
-  }, [demo, nav]);
+  }, [demo, nav, notify]);
 
   if (!availableDemos[demo]) {
     return (
