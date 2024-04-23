@@ -235,6 +235,7 @@ a.active {
   position: sticky;
   top:-60px;
   background-color: var(--bg-color);
+  z-index: 1;
 }
 .app-dark .header-wrapper{
   background-color: var(--dark-bg-color);
