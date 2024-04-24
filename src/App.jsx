@@ -12,7 +12,12 @@ import AvailableDemos from "./components/demoComponents/AvailableDemos.jsx";
 import Demo from "./components/demoComponents/Demo.jsx";
 import Card from "./components/homeComponents/Card.jsx";
 function App() {
-  const [theme, setTheme] = useState(localStorage.getItem("theme") ?? "dark");
+  const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") ?? systemTheme
+  );
   return (
     <div className={"app" + (theme === "dark" ? "-dark" : "")}>
       <ThemeContext.Provider value={{ theme, setTheme }}>
