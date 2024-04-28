@@ -252,6 +252,12 @@ a.active {
 .header li:not(:first-child) {
   margin-left: 20px;
 }
+.header a{
+  border: 1px solid transparent;
+}
+.header a:hover{
+  border: 1px solid rgb(46, 46, 231);
+}
 .hamburger-menu {
   display: none;
 }
