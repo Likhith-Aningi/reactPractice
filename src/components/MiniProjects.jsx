@@ -3,13 +3,15 @@ import ColorPicker from "./miniProjects/ColorPicker";
 import TodoList from "./miniProjects/TodoList";
 import DigitalClock from "./miniProjects/DigitalClock";
 import StopWatch from "./miniProjects/StopWatch";
+import PasswordGenerator from "./miniProjects/PasswordGenerator";
 function MiniProjects() {
-  const [currentMiniProject, setCurrentMiniProject] = useState("stopWatch");
+  const [currentMiniProject, setCurrentMiniProject] = useState("pwdGen");
   const availableProjects = {
     colorPicker: <ColorPicker />,
     todoList: <TodoList />,
     digitalClock: <DigitalClock />,
     stopWatch: <StopWatch />,
+    pwdGen: <PasswordGenerator />,
   };
   return (
     <div
@@ -29,6 +31,7 @@ function MiniProjects() {
         <option value="todoList">Todo App</option>
         <option value="digitalClock">Digital Clock</option>
         <option value="stopWatch">Stop Watch</option>
+        <option value="pwdGen">Random Password Generator</option>
       </select>
       <div style={{ padding: "40px" }}>
         {availableProjects[currentMiniProject]}
