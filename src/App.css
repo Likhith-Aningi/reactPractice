@@ -279,7 +279,56 @@ a.active {
     transform: rotate(360deg);
   }
 }
+.pwd-gen-container {
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--dark-bg-color);
+  padding: 20px;
+  text-align: center;
+}
+.app-dark .pwd-gen-container{
+  background-color: var(--dark-bg-color);
+  box-shadow: 0 2px 5px var(--bg-color);
+}
+.pwd-gen-container h1 {
+  margin-bottom: 20px;
+}
 
+.pwd-gen-container label {
+  margin-right: 10px;
+}
+
+.pwd-gen-container input[type="number"] {
+  width: 50px;
+}
+
+.pwd-gen-container button {
+  background-color: #4CAF50;
+  color: var(--bg-color);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.pwd-gen-container button:hover {
+  background-color: #45a049;
+}
+
+#password {
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 18px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
+  box-sizing: border-box;
+}
 @media screen and (max-width: 480px) {
   /* for mobile view*/
   .digital-clock {
