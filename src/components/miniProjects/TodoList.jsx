@@ -1,9 +1,28 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function TodoList() {
   const [tasks, setTasks] = useState(["to do"]);
   const [task, setTask] = useState("");
   const inputArea = useRef(null);
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "Enter") {
+        addTask();
+      }
+    }
+
+    const input = inputArea.current;
+    if (input) {
+      input.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      if (input) {
+        input.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+  }, [task]);
   function addTask() {
     if (task.trim() === "") {
       alert("enter task and add");
