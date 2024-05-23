@@ -46,7 +46,7 @@ const PasswordGenerator = () => {
   return (
     <div className="pwd-gen-container">
       <h1>Random Password Generator</h1>
-      <div>
+      <div className="cbs">
         <label>
           <input type="checkbox" id="uppercaseCheckbox" defaultChecked />
           Uppercase Letters

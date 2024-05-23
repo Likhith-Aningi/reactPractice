@@ -356,4 +356,8 @@ a.active {
     cursor: pointer;
     padding: 10px;
   }
+  .pwd-gen-container .cbs {
+    display: flex;
+    margin-bottom: 20px;
+  }
 }
