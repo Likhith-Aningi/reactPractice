@@ -1,16 +1,19 @@
-import { useState } from "react";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import React, { useState, lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/Footer.jsx";
-import Header from "./components/Header.jsx";
-import Home from "./components/Home.jsx";
-import MiniProjects from "./components/MiniProjects.jsx";
-import NotFound from "./components/NotFound.jsx";
-import Spacer from "./components/Spacer.jsx";
 import ThemeContext from "./components/ThemeContext.js";
-import AvailableDemos from "./components/demoComponents/AvailableDemos.jsx";
-import Demo from "./components/demoComponents/Demo.jsx";
-import Card from "./components/homeComponents/Card.jsx";
+const Footer = lazy(() => import("./components/Footer.jsx"));
+const Header = lazy(() => import("./components/Header.jsx"));
+const Home = lazy(() => import("./components/Home.jsx"));
+const MiniProjects = lazy(() => import("./components/MiniProjects.jsx"));
+const NotFound = lazy(() => import("./components/NotFound.jsx"));
+const Spacer = lazy(() => import("./components/Spacer.jsx"));
+const AvailableDemos = lazy(() =>
+  import("./components/demoComponents/AvailableDemos.jsx")
+);
+const Demo = lazy(() => import("./components/demoComponents/Demo.jsx"));
+const Card = lazy(() => import("./components/homeComponents/Card.jsx"));
+
 function App() {
   const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
@@ -18,28 +21,31 @@ function App() {
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") ?? systemTheme
   );
+
   return (
-    <div className={"app" + (theme === "dark" ? "-dark" : "")}>
-      <ThemeContext.Provider value={{ theme, setTheme }}>
-        <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/about"
-              element={<Card name="likhith" desc="full-stack dev" age={23} />}
-            />
-            <Route path="/demos" element={<Outlet />}>
-              <Route index element={<AvailableDemos />} />
-              <Route path=":demo" element={<Demo />} />
-            </Route>
-            <Route path="/miniProjects" element={<MiniProjects />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        <Spacer />
-        <Footer />
-      </ThemeContext.Provider>
+    <div className={`app${theme === "dark" ? "-dark" : ""}`}>
+      <Suspense fallback={<div className="loader"></div>}>
+        <ThemeContext.Provider value={{ theme, setTheme }}>
+          <BrowserRouter>
+            <Header />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route
+                path="/about"
+                element={<Card name="likhith" desc="full-stack dev" age={23} />}
+              />
+              <Route path="/demos" element={<Outlet />}>
+                <Route index element={<AvailableDemos />} />
+                <Route path=":demo" element={<Demo />} />
+              </Route>
+              <Route path="/miniProjects" element={<MiniProjects />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <Spacer />
+          <Footer />
+        </ThemeContext.Provider>
+      </Suspense>
     </div>
   );
 }
