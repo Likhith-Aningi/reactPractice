@@ -1,6 +1,26 @@
-import React from "react";
-
+import React, { useState, useContext, useCallback } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ThemeContext from "../ThemeContext";
 const PasswordGenerator = () => {
+  const [password, setPassword] = useState("");
+  const { theme } = useContext(ThemeContext);
+  const notify = () =>
+    toast.info("Password copied to clipboard", {
+      autoClose: 5000,
+      pauseOnHover: false,
+      theme: theme,
+      position: "top-center",
+      toastId: 'noDup',
+    });
+    const error = () =>
+      toast.error("Please select at least one option for generating the password.", {
+        autoClose: 5000,
+        pauseOnHover: false,
+        theme: theme,
+        position: "top-right",
+        toastId: 'noDup',
+      });  
   function generatePassword() {
     const length = document.getElementById("lengthInput").value;
     const useUpperCase = document.getElementById("uppercaseCheckbox").checked;
@@ -11,9 +31,9 @@ const PasswordGenerator = () => {
     ).checked;
 
     if (!useUpperCase && !useLowerCase && !useNumbers && !useSpecialChars) {
-      alert("Please select at least one option for generating the password.");
-      document.getElementById("password").value = "";
-      document.getElementById("uppercaseCheckbox").checked=true;
+      error();
+      setPassword("");  
+      document.getElementById("uppercaseCheckbox").checked = true;
       return;
     }
     if (length < 4 || length > 20) {
@@ -34,48 +54,60 @@ const PasswordGenerator = () => {
     if (useNumbers) validChars += numberChars;
     if (useSpecialChars) validChars += specialChars;
 
-    let password = "";
+    let newPassword = "";
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * validChars.length);
-      password += validChars[randomIndex];
+      newPassword += validChars[randomIndex];
     }
+    console.log(newPassword);
+    setPassword(newPassword);
+  }
 
-    document.getElementById("password").value = password;
+  function copyToClipboard() {
+    if (password) {
+      navigator.clipboard.writeText(password);
+      notify();
+    }
   }
 
   return (
-    <div className="pwd-gen-container">
-      <h1>Random Password Generator</h1>
-      <div className="cbs">
-        <label>
-          <input type="checkbox" id="uppercaseCheckbox" defaultChecked />
-          Uppercase Letters
-        </label>
-        <label>
-          <input type="checkbox" id="lowercaseCheckbox" /> Lowercase Letters
-        </label>
-        <label>
-          <input type="checkbox" id="numbersCheckbox" /> Numbers
-        </label>
-        <label>
-          <input type="checkbox" id="specialCharsCheckbox" /> Special Characters
-        </label>
+    <>
+      <ToastContainer />
+      <div className="pwd-gen-container">
+        <h1>Random Password Generator</h1>
+        <div className="cbs">
+          <label>
+            <input type="checkbox" id="uppercaseCheckbox" defaultChecked />
+            Uppercase Letters
+          </label>
+          <label>
+            <input type="checkbox" id="lowercaseCheckbox" /> Lowercase Letters
+          </label>
+          <label>
+            <input type="checkbox" id="numbersCheckbox" /> Numbers
+          </label>
+          <label>
+            <input type="checkbox" id="specialCharsCheckbox" /> Special
+            Characters
+          </label>
+        </div>
+        <div>
+          <label htmlFor="lengthInput">Length:</label>
+          <input
+            type="number"
+            id="lengthInput"
+            min="6"
+            max="20"
+            defaultValue="12"
+          />
+        </div>
+        <button onClick={() => generatePassword()}>Generate Password</button>
+        <div>
+          <input type="text" id="password" readOnly value={password} />
+          {password && <button style={{marginLeft:'10px'}} onClick={copyToClipboard}>Copy</button>}
+        </div>
       </div>
-      <div>
-        <label htmlFor="lengthInput">Length:</label>
-        <input
-          type="number"
-          id="lengthInput"
-          min="6"
-          max="20"
-          defaultValue="12"
-        />
-      </div>
-      <button onClick={() => generatePassword()}>Generate Password</button>
-      <div>
-        <input type="text" id="password" readOnly />
-      </div>
-    </div>
+    </>
   );
 };
 
