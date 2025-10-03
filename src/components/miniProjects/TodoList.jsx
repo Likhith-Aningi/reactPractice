@@ -1,9 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 
 function TodoList() {
-  const [tasks, setTasks] = useState(["to do"]);
+  // Initialize tasks from localStorage or default value
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem("todoTasks");
+    return savedTasks ? JSON.parse(savedTasks) : ["to do"];
+  });
   const [task, setTask] = useState("");
   const inputArea = useRef(null);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("todoTasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -11,18 +20,17 @@ function TodoList() {
         addTask();
       }
     }
-
     const input = inputArea.current;
     if (input) {
       input.addEventListener("keydown", handleKeyDown);
     }
-
     return () => {
       if (input) {
         input.removeEventListener("keydown", handleKeyDown);
       }
     };
   }, [task]);
+
   function addTask() {
     if (task.trim() === "") {
       alert("enter task and add");
@@ -32,6 +40,7 @@ function TodoList() {
     setTasks((p) => [...p, task]);
     setTask("");
   }
+
   function moveUp(index) {
     if (index === 0) return;
     const newTasks = [...tasks];
@@ -40,6 +49,7 @@ function TodoList() {
     newTasks[index - 1] = temp;
     setTasks(newTasks);
   }
+
   function moveDown(index) {
     if (index === tasks.length - 1) return;
     const newTasks = [...tasks];
@@ -48,9 +58,11 @@ function TodoList() {
     newTasks[index + 1] = temp;
     setTasks(newTasks);
   }
+
   function deleteTask(index) {
     setTasks(tasks.filter((_, i) => index !== i));
   }
+
   return (
     <div>
       <h3 style={{ textAlign: "center" }}>To Do App</h3>
