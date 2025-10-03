@@ -3,6 +3,7 @@
   --dark-bg-color: #1d1c1c;
   --bg-color: #fff;
 }
+
 .app,
 .app-dark {
   overflow: auto;
@@ -26,17 +27,19 @@
   margin: 10px;
   border-radius: 5%;
 }
+
 .card:hover {
   box-shadow: 8px 6px 8px rgb(198, 42, 42);
   filter: drop-shadow(0 0 2em #fb1010dc);
   transition: all 0.3s;
-  transform: translate(-2px,-10px);
+  transform: translate(-2px, -10px);
 }
 
 .app-dark .card {
   border: 1px solid rgb(255, 255, 254);
   box-shadow: 5px 3px 5px rgb(198, 180, 42);
 }
+
 .app-dark .card:hover {
   box-shadow: 8px 6px 8px rgb(198, 180, 42);
 }
@@ -97,14 +100,17 @@ a.active {
   width: 80%;
   box-sizing: border-box;
 }
+
 .app-dark .todo-input[type="text"] {
   color: #f4f4f4;
   background-color: #333;
 }
+
 .todo-input:focus {
   outline: none;
   border-color: #07f707;
 }
+
 .todo-task {
   padding: 10px;
   font-size: 1.4rem;
@@ -223,6 +229,13 @@ a.active {
   background-color: #ddd;
 }
 
+.dropdowncontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .dropdownoptions {
   border-radius: 12px;
   padding: 8px 10px;
@@ -236,31 +249,39 @@ a.active {
   color: #e2d9d9;
   background-color: #413e3e;
 }
+
 .header-wrapper {
   position: sticky;
   top: -60px;
   background-color: var(--bg-color);
   z-index: 1;
 }
+
 .app-dark .header-wrapper {
   background-color: var(--dark-bg-color);
 }
+
 .header {
   display: flex;
   list-style-type: none;
 }
+
 .header li:not(:first-child) {
   margin-left: 20px;
 }
-.header a{
+
+.header a {
   border: 1px solid transparent;
 }
-.header a:hover{
+
+.header a:hover {
   border: 1px solid rgb(46, 46, 231);
 }
+
 .hamburger-menu {
   display: none;
 }
+
 .loader {
   border: 4px solid #f3f3f3;
   border-top: 4px solid #3498db;
@@ -275,10 +296,12 @@ a.active {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 .pwd-gen-container {
   background-color: var(--bg-color);
   border-radius: 8px;
@@ -286,10 +309,12 @@ a.active {
   padding: 20px;
   text-align: center;
 }
-.app-dark .pwd-gen-container{
+
+.app-dark .pwd-gen-container {
   background-color: var(--dark-bg-color);
   box-shadow: 0 2px 5px var(--bg-color);
 }
+
 .pwd-gen-container h1 {
   margin-bottom: 20px;
 }
@@ -329,33 +354,110 @@ a.active {
   width: 300px;
   box-sizing: border-box;
 }
+.todo-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.todo-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.todo-input-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.todo-add-btn {
+  background-color: #07f707;
+  border-radius: 50%;
+  border: none;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: transform 0.2s;
+}
+
+.todo-add-btn:hover {
+  transform: scale(1.1);
+}
+
+.todo-list {
+  padding: 0;
+  list-style: none;
+}
+
+.todo-status-select {
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 3px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.todo-btn {
+  border: none;
+  margin: 3px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.todo-btn:hover {
+  transform: scale(1.1);
+}
+
+.todo-btn-up,
+.todo-btn-down {
+  background-color: rgb(39, 122, 211);
+}
+
+.todo-btn-delete {
+  background-color: rgb(211, 39, 39);
+}
 @media screen and (max-width: 480px) {
+
   /* for mobile view*/
   .digital-clock {
     font-size: 3rem;
   }
+
   .stop-watch-controls input {
     margin: 0 9px;
     padding: 12px 7px;
   }
+
   .header {
     display: none;
     flex-direction: column;
     text-align: center;
     padding-left: 0px;
   }
+
   .header.show-menu {
     display: flex;
   }
+
   .header li:not(:first-child) {
     margin-left: 0px;
     padding-top: 8px;
   }
+
   .hamburger-menu {
     display: block;
     cursor: pointer;
     padding: 10px;
   }
+
   .pwd-gen-container .cbs {
     display: flex;
     margin-bottom: 20px;

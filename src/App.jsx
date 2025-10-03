@@ -2,7 +2,6 @@ import React, { useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import "./App.css";
 import ThemeContext from "./components/ThemeContext.js";
-// import Playground from "./components/Playground.jsx";
 const Footer = lazy(() => import("./components/Footer.jsx"));
 const Header = lazy(() => import("./components/Header.jsx"));
 const Playground = lazy(() => import("./components/Playground.jsx"));
@@ -56,7 +55,10 @@ function App() {
                 <Route index element={<AvailableDemos />} />
                 <Route path=":demo" element={<Demo />} />
               </Route>
-              <Route path="/miniProjects" element={<MiniProjects />} />
+              <Route path="/miniProjects" element={<Outlet />}>
+                <Route index element={<MiniProjects />} />
+                <Route path=":project" element={<MiniProjects />} />
+              </Route>
               <Route path="/playground" element={<Playground />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

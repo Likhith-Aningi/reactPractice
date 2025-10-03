@@ -89,9 +89,9 @@ function TodoList() {
   }
 
   return (
-    <div>
-      <h3 style={{ textAlign: "center" }}>To Do App</h3>
-      <span style={{ display: "flex", justifyContent: "center" }}>
+    <div className="todo-container">
+      <h3 className="todo-title">To Do App</h3>
+      <div className="todo-input-container">
         <input
           ref={inputArea}
           className="todo-input"
@@ -100,72 +100,55 @@ function TodoList() {
           onChange={(e) => setTask(e.target.value)}
           placeholder="Enter task"
         />
-        <input
-          type="button"
-          value="➕"
-          style={{
-            backgroundColor: "#07f707",
-            borderRadius: "50%",
-            margin: "14px",
-          }}
+        <button
+          className="todo-add-btn"
           onClick={() => addTask()}
           title="Add task"
-        />
-      </span>
-      <ul style={{ padding: "0px" }}>
+        >
+          ➕
+        </button>
+      </div>
+      <ul className="todo-list">
         {tasks.map((task, index) => (
-          <li className="todo-task" key={index}  title={`Last updated: ${formatDateTime(task.lastUpdated)}`}>
+          <li 
+            className="todo-task" 
+            key={index}  
+            title={`Last updated: ${formatDateTime(task.lastUpdated)}`}
+          >
             <span className="todo-text">{task.text}</span>
             <select
+              className="todo-status-select"
               value={task.status}
               onChange={(e) => updateStatus(index, e.target.value)}
               style={{
                 backgroundColor: getStatusColor(task.status),
-                color: "white",
-                border: "none",
-                padding: "5px 10px",
-                borderRadius: "5px",
-                margin: "3px",
-                cursor: "pointer",
               }}
             >
               <option value="to do">To Do</option>
               <option value="doing">In Progress</option>
               <option value="done">Done</option>
             </select>
-            <input
-              type="button"
+            <button
+              className="todo-btn todo-btn-up"
               onClick={() => moveUp(index)}
-              value="👆"
-              style={{
-                backgroundColor: "rgb(39, 122, 211)",
-                margin: "3px",
-                borderRadius: "20px",
-              }}
               title="Move up"
-            />
-            <input
-              type="button"
+            >
+              👆
+            </button>
+            <button
+              className="todo-btn todo-btn-down"
               onClick={() => moveDown(index)}
-              value="👇"
-              style={{
-                backgroundColor: "rgb(39, 122, 211)",
-                margin: "3px",
-                borderRadius: "20px",
-              }}
               title="Move down"
-            />
-            <input
-              type="button"
+            >
+              👇
+            </button>
+            <button
+              className="todo-btn todo-btn-delete"
               onClick={() => deleteTask(index)}
-              value="🗑️"
-              style={{
-                backgroundColor: "rgb(211, 39, 39)",
-                margin: "3px",
-                borderRadius: "20px",
-              }}
               title="Delete task"
-            />
+            >
+              🗑️
+            </button>
           </li>
         ))}
       </ul>

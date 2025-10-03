@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import ColorPicker from "./miniProjects/ColorPicker";
 import TodoList from "./miniProjects/TodoList";
 import DigitalClock from "./miniProjects/DigitalClock";
 import StopWatch from "./miniProjects/StopWatch";
 import PasswordGenerator from "./miniProjects/PasswordGenerator";
+
 function MiniProjects() {
-  const [currentMiniProject, setCurrentMiniProject] = useState("pwdGen");
+  const { project } = useParams();
+  const navigate = useNavigate();
+  const [currentMiniProject, setCurrentMiniProject] = useState(project || "pwdGen");
+
   const availableProjects = {
     colorPicker: <ColorPicker />,
     todoList: <TodoList />,
@@ -13,19 +18,27 @@ function MiniProjects() {
     stopWatch: <StopWatch />,
     pwdGen: <PasswordGenerator />,
   };
+
+  useEffect(() => {
+    if (project && availableProjects[project]) {
+      setCurrentMiniProject(project);
+    } else if (project) {
+      navigate("/miniProjects/pwdGen", { replace: true });
+    }
+  }, [project]);
+
+  const handleProjectChange = (e) => {
+    const selectedProject = e.target.value;
+    setCurrentMiniProject(selectedProject);
+    navigate(`/miniProjects/${selectedProject}`);
+  };
+
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column",
-      }}
-    >
+    <div className="dropdowncontainer">
       <select
         className="dropdownoptions"
-        defaultValue={currentMiniProject}
-        onChange={(e) => setCurrentMiniProject(e.target.value)}
+        value={currentMiniProject}
+        onChange={handleProjectChange}
       >
         <option value="colorPicker">color picker</option>
         <option value="todoList">Todo App</option>
