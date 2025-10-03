@@ -48,6 +48,11 @@ function Header() {
             MiniProjects
           </NavLink>
         </li>
+        <li>
+          <NavLink to="/playground" onClick={toggleMenu}>
+            Playground
+          </NavLink>
+        </li>
         <li
           style={{
             listStyleType: "none",
