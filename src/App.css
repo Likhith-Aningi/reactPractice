@@ -1,7 +1,7 @@
 :root {
   --dark-color: rgb(238, 232, 223);
   --dark-bg-color: #1d1c1c;
-  --bg-color: #fff;
+  --bg-color: #f7f2f2;
 }
 
 .app,
@@ -356,6 +356,7 @@ a.active {
   width: 300px;
   box-sizing: border-box;
 }
+
 .todo-container {
   max-width: 600px;
   margin: 0 auto;
@@ -402,7 +403,8 @@ a.active {
   margin: 3px;
   cursor: pointer;
   font-size: 14px;
-  flex-shrink: 0; /* Prevents shrinking */
+  flex-shrink: 0;
+  /* Prevents shrinking */
 }
 
 .todo-btn {
@@ -413,8 +415,10 @@ a.active {
   cursor: pointer;
   font-size: 16px;
   transition: transform 0.2s;
-  flex-shrink: 0; /* Prevents shrinking */
-  min-width: 35px; /* Fixed minimum width */
+  flex-shrink: 0;
+  /* Prevents shrinking */
+  min-width: 35px;
+  /* Fixed minimum width */
 }
 
 .todo-btn:hover {
@@ -429,6 +433,7 @@ a.active {
 .todo-btn-delete {
   background-color: rgb(211, 39, 39);
 }
+
 @media screen and (max-width: 480px) {
 
   /* for mobile view*/
@@ -450,17 +455,49 @@ a.active {
 
   .header.show-menu {
     display: flex;
+    flex-direction: column;
+    position: fixed;
+    /* make it overlay the entire screen */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-color);
+    z-index: 999;
+    /* stay above everything else */
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  .app-dark .header.show-menu {
+    background-color: var(--dark-bg-color);
+  }
+
+  .header.show-menu li {
+    font-size: 1.5rem;
+  }
+
+  /* Optional: style close (✕) button to stay visible */
+  .hamburger-menu {
+    position: fixed;
+    top: 7%;
+    left: 15px;
+    z-index: 1000;
+    display: block;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: var(--bg-color);
+  }
+  .app-dark .hamburger-menu{
+    background-color: var(--dark-bg-color);
   }
 
   .header li:not(:first-child) {
     margin-left: 0px;
     padding-top: 8px;
-  }
-
-  .hamburger-menu {
-    display: block;
-    cursor: pointer;
-    padding: 10px;
   }
 
   .pwd-gen-container .cbs {
