@@ -6,7 +6,6 @@ function InfiniteLoadingWithReactWindowComponent() {
   const [hasMore, setHasMore] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const loadingRef = useRef(false)
-
   // Simulate fetching data from an API
   const fetchMoreData = useCallback(() => {
     if (loadingRef.current || !hasMore) return
