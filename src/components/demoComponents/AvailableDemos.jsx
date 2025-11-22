@@ -3,10 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { UseMemoDemo } from "./demoExamps/UseMemoDemo";
 import UseCallbackDemo from "./demoExamps/UseCallbackDemo";
 import ReduxCounterDemo from "./demoExamps/ReduxCounterDemo";
+import InfiniteLoadingWithReactWindowComponent from "./demoExamps/InfiniteLoadingWithReactWindow";
 export const availableDemos = {
   useMemoDemo: <UseMemoDemo />,
   useCallbackDemo: <UseCallbackDemo />,
   reduxCounterDemo: <ReduxCounterDemo />,
+  infiniteLoadingDemo: <InfiniteLoadingWithReactWindowComponent />,
 };
 function AvailableDemos() {
   const nav = useNavigate();
@@ -46,6 +48,11 @@ function AvailableDemos() {
         <li>
           <Link to={`/demos/reduxCounterDemo`} onClick={(e) => handleClick(e)}>
             Redux counter Demo
+          </Link>
+        </li>
+        <li>
+          <Link to={`/demos/infiniteLoadingDemo`} onClick={(e) => handleClick(e)}>
+            Infinite scroller with react window
           </Link>
         </li>
         <li>

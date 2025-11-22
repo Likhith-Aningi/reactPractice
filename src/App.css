@@ -131,7 +131,8 @@ a.active {
 
 .todo-text {
   flex: 1;
-  min-width: 0; /* Important for text overflow */
+  min-width: 0;
+  /* Important for text overflow */
   word-wrap: break-word;
   overflow-wrap: break-word;
   margin-right: 10px;
@@ -434,6 +435,138 @@ a.active {
   background-color: rgb(211, 39, 39);
 }
 
+.scroller-app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.scroller-app-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.scroller-app-header h1 {
+  margin: 0 0 1rem 0;
+  color: #646cff;
+  font-size: 2rem;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.loading-badge {
+  background: #ffa500;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.complete-badge {
+  background: #22c55e;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.list-container {
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: white;
+  transition: background-color 0.2s;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.list-item:hover {
+  background-color: #f8fafc;
+}
+
+.item-color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.item-text {
+  flex: 1;
+  font-weight: 500;
+  color: #1e293b;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item-id {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.loading-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+
+.initial-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  gap: 1rem;
+}
+
+.initial-loading .spinner {
+  width: 40px;
+  height: 40px;
+  border-width: 4px;
+}
+
+.scroller-app-footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.scroller-app-footer p {
+  margin: 0.5rem 0;
+}
+
+.scroller-app-footer code {
+  background: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  color: #646cff;
+}
+
 @media screen and (max-width: 480px) {
 
   /* for mobile view*/
@@ -491,7 +624,8 @@ a.active {
     border-radius: 50%;
     background-color: var(--bg-color);
   }
-  .app-dark .hamburger-menu{
+
+  .app-dark .hamburger-menu {
     background-color: var(--dark-bg-color);
   }
 
