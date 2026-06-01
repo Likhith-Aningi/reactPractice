@@ -5,6 +5,7 @@ import TodoList from "./miniProjects/TodoList";
 import DigitalClock from "./miniProjects/DigitalClock";
 import StopWatch from "./miniProjects/StopWatch";
 import PasswordGenerator from "./miniProjects/PasswordGenerator";
+import MillsSolver from "./miniProjects/MillsSolver";
 
 function MiniProjects() {
   const { project } = useParams();
@@ -17,6 +18,7 @@ function MiniProjects() {
     digitalClock: <DigitalClock />,
     stopWatch: <StopWatch />,
     pwdGen: <PasswordGenerator />,
+    mills_Solver: <MillsSolver />,
   };
 
   useEffect(() => {
@@ -45,6 +47,7 @@ function MiniProjects() {
         <option value="digitalClock">Digital Clock</option>
         <option value="stopWatch">Stop Watch</option>
         <option value="pwdGen">Random Password Generator</option>
+        <option value="mills_Solver">Mills Solver</option>
       </select>
       <div style={{ padding: "40px" }}>
         {availableProjects[currentMiniProject]}
