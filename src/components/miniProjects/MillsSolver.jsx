@@ -37,9 +37,14 @@ const JUNCTIONS = new Set([4, 10, 13, 19]);
 const DIFFICULTY = {
   easy:   { label: "Easy",   score: 4,  placeDepth: 2, moveDepth: 3, flyDepth: 2, randomTolerance: 8 },
   medium: { label: "Medium", score: 7,  placeDepth: 3, moveDepth: 5, flyDepth: 3, randomTolerance: 3 },
-  hard:   { label: "Hard",   score: 10, placeDepth: 4, moveDepth: 6, flyDepth: 4, randomTolerance: 0 },
+  hard:   { label: "Hard",   score: 9,  placeDepth: 4, moveDepth: 6, flyDepth: 4, randomTolerance: 0 },
+  master: { label: "Master", score: 10, placeDepth: 5, moveDepth: 7, flyDepth: 5, randomTolerance: 0, useTT: true },
 };
-const DIFFICULTY_ORDER = ["easy", "medium", "hard"];
+const DIFFICULTY_ORDER = ["easy", "medium", "hard", "master"];
+
+const TT_LIMIT = 200000;
+const stateKey = (s) =>
+  `${s.board.join("")}|${s.turn}|${s.placed[1]}|${s.placed[2]}`;
 
 const GRAIN = [
   { x: 84, y: 120, r: 1 }, { x: 160, y: 92, r: 0.8 }, { x: 230, y: 180, r: 0.6 },
@@ -281,6 +286,62 @@ const minimax = (s, depth, alpha, beta, player, ai, hu) => {
   }
 };
 
+const TT_EXACT = 0, TT_LOWER = 1, TT_UPPER = 2;
+
+const minimaxTT = (s, depth, alpha, beta, player, ai, hu, tt) => {
+  const origAlpha = alpha, origBeta = beta;
+  const key = stateKey(s);
+  const entry = tt.get(key);
+  if (entry && entry.depth >= depth) {
+    if (entry.flag === TT_EXACT) return entry.score;
+    if (entry.flag === TT_LOWER) { if (entry.score > alpha) alpha = entry.score; }
+    else if (entry.flag === TT_UPPER) { if (entry.score < beta) beta = entry.score; }
+    if (alpha >= beta) return entry.score;
+  }
+  if (depth === 0 || s.winner !== null) return evaluate(s, ai, hu);
+
+  const moves = orderMoves(getLegalMoves(s, player));
+  if (moves.length === 0) return player === ai ? -100000 : 100000;
+
+  if (entry && entry.bestMove) {
+    const bm = entry.bestMove;
+    for (let i = 1; i < moves.length; i++) {
+      const m = moves[i];
+      if (m.from === bm.from && m.to === bm.to && m.remove === bm.remove) {
+        moves[i] = moves[0];
+        moves[0] = m;
+        break;
+      }
+    }
+  }
+
+  let bestMove = null;
+  let best;
+  if (player === ai) {
+    best = -Infinity;
+    for (const m of moves) {
+      const sc = minimaxTT(applyMove(s, m, player), depth - 1, alpha, beta, OPP[player], ai, hu, tt);
+      if (sc > best) { best = sc; bestMove = m; }
+      if (best > alpha) alpha = best;
+      if (beta <= alpha) break;
+    }
+  } else {
+    best = Infinity;
+    for (const m of moves) {
+      const sc = minimaxTT(applyMove(s, m, player), depth - 1, alpha, beta, OPP[player], ai, hu, tt);
+      if (sc < best) { best = sc; bestMove = m; }
+      if (best < beta) beta = best;
+      if (beta <= alpha) break;
+    }
+  }
+
+  if (tt.size < TT_LIMIT) {
+    const flag = best <= origAlpha ? TT_UPPER : best >= origBeta ? TT_LOWER : TT_EXACT;
+    tt.set(key, { depth, score: best, flag, bestMove });
+  }
+  return best;
+};
+
 const pickDepth = (s, ai, cfg) => {
   const phase = playerPhase(s, ai);
   if (phase === "placing") {
@@ -296,11 +357,14 @@ const chooseAIMove = (state, ai, hu, cfg) => {
   if (!moves.length) return null;
   const depth = pickDepth(state, ai, cfg);
   const opp = OPP[ai];
+  const tt = cfg.useTT ? new Map() : null;
   let bestScore = -Infinity;
   const scored = [];
   for (const m of moves) {
     const ns = applyMove(state, m, ai);
-    const sc = minimax(ns, depth - 1, -Infinity, Infinity, opp, ai, hu);
+    const sc = tt
+      ? minimaxTT(ns, depth - 1, -Infinity, Infinity, opp, ai, hu, tt)
+      : minimax(ns, depth - 1, -Infinity, Infinity, opp, ai, hu);
     scored.push({ m, sc });
     if (sc > bestScore) bestScore = sc;
   }
@@ -827,6 +891,7 @@ function MillsSolver() {
                     <button
                       key={key}
                       type="button"
+                      data-difficulty={key}
                       className={`difficulty-pill ${difficulty === key ? "active" : ""}`}
                       onClick={() => setDifficulty(key)}
                       aria-pressed={difficulty === key}
