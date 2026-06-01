@@ -49,6 +49,24 @@ const newState = () => ({
   selected: null,
   winner: null,
   lastMoves: { 1: null, 2: null },
+  lastRemovals: { 1: null, 2: null },
+});
+
+const cloneGameState = (g) => ({
+  board: g.board.slice(),
+  turn: g.turn,
+  placed: { 1: g.placed[1], 2: g.placed[2] },
+  mustRemove: g.mustRemove,
+  selected: g.selected,
+  winner: g.winner,
+  lastMoves: {
+    1: g.lastMoves[1] ? { ...g.lastMoves[1] } : null,
+    2: g.lastMoves[2] ? { ...g.lastMoves[2] } : null,
+  },
+  lastRemovals: {
+    1: g.lastRemovals?.[1] ?? null,
+    2: g.lastRemovals?.[2] ?? null,
+  },
 });
 
 const onBoard = (s, p) => {
@@ -288,6 +306,7 @@ function MillsSolver() {
   const [highlightMill, setHighlightMill] = useState([]);
   const [removingPoint, setRemovingPoint] = useState(null);
   const [showOver, setShowOver] = useState(false);
+  const [history, setHistory] = useState([]);
 
   const stateRef = useRef(game);
   const renderedPositionsRef = useRef(new Set());
@@ -324,8 +343,9 @@ function MillsSolver() {
         const newBoard = s.board.slice();
         newBoard[removingPoint] = 0;
         const newTurn = OPP[s.turn];
+        const newLastRemovals = { ...s.lastRemovals, [s.turn]: removingPoint };
         const winner = detectWinnerAfter(newBoard, s.placed, newTurn, s.winner, OPP[newTurn]);
-        return { ...s, board: newBoard, mustRemove: false, turn: newTurn, selected: null, winner };
+        return { ...s, board: newBoard, lastRemovals: newLastRemovals, mustRemove: false, turn: newTurn, selected: null, winner };
       });
       setRemovingPoint(null);
     }, 520);
@@ -388,6 +408,7 @@ function MillsSolver() {
           board: newBoard,
           placed: newPlaced,
           lastMoves: newLastMoves,
+          lastRemovals: { ...s.lastRemovals, [aiColor]: null },
           turn: newTurn,
           selected: null,
           mustRemove: false,
@@ -408,6 +429,7 @@ function MillsSolver() {
     setHighlightMill([]);
     setRemovingPoint(null);
     setShowOver(false);
+    setHistory([]);
     setPhase("game");
   };
 
@@ -420,6 +442,27 @@ function MillsSolver() {
     setAiThinking(false);
     setHighlightMill([]);
     setRemovingPoint(null);
+    setHistory([]);
+  };
+
+  const canUndo =
+    history.length > 0
+    && !aiThinking
+    && removingPoint === null
+    && game.turn === humanColor
+    && !game.winner;
+
+  const undo = () => {
+    if (!canUndo) return;
+    gameIdRef.current++;
+    aiPendingRef.current = false;
+    inputLockedRef.current = false;
+    const prev = history[history.length - 1];
+    setHistory(h => h.slice(0, -1));
+    setGame(prev);
+    setHighlightMill([]);
+    setRemovingPoint(null);
+    setShowOver(false);
   };
 
   const pointHint = (i) => {
@@ -457,6 +500,7 @@ function MillsSolver() {
 
     if (ph === "placing") {
       if (game.board[point] !== 0) return;
+      setHistory(h => [...h, cloneGameState(game)]);
       const newBoard = game.board.slice();
       newBoard[point] = game.turn;
       const newPlaced = { ...game.placed, [game.turn]: game.placed[game.turn] + 1 };
@@ -472,6 +516,7 @@ function MillsSolver() {
           board: newBoard,
           placed: newPlaced,
           lastMoves: newLastMoves,
+          lastRemovals: { ...game.lastRemovals, [game.turn]: null },
           turn: newTurn,
           selected: null,
         });
@@ -500,6 +545,7 @@ function MillsSolver() {
     if (!targets.includes(point)) return;
 
     const from = game.selected;
+    setHistory(h => [...h, { ...cloneGameState(game), selected: null }]);
     const newBoard = game.board.slice();
     newBoard[from] = 0;
     newBoard[point] = game.turn;
@@ -516,6 +562,7 @@ function MillsSolver() {
         ...game,
         board: newBoard,
         lastMoves: newLastMoves,
+        lastRemovals: { ...game.lastRemovals, [game.turn]: null },
         turn: newTurn,
         selected: null,
         winner,
@@ -553,6 +600,22 @@ function MillsSolver() {
           strokeLinecap="round" opacity={0.9} className="trail-line"
         />
         <circle cx={x1} cy={y1} r={3.5} fill={stroke} opacity={0.77} className="trail-origin" />
+      </g>
+    );
+  }
+
+  const removalXs = [];
+  for (const player of [WHITE, BLACK]) {
+    const r = game.lastRemovals?.[player];
+    if (r === null || r === undefined) continue;
+    if (game.board[r] !== 0) continue;
+    const [x, y] = POINTS[r];
+    removalXs.push(
+      <g key={`rx-${player}`} className="removal-x" pointerEvents="none">
+        <line x1={x - 11} y1={y - 11} x2={x + 11} y2={y + 11}
+          stroke="#c25844" strokeWidth={3} strokeLinecap="round" opacity={0.92} />
+        <line x1={x - 11} y1={y + 11} x2={x + 11} y2={y - 11}
+          stroke="#c25844" strokeWidth={3} strokeLinecap="round" opacity={0.92} />
       </g>
     );
   }
@@ -782,6 +845,7 @@ function MillsSolver() {
                   <g>{millLines}</g>
                   <g>{pointEls}</g>
                   <g>{trailEls}</g>
+                  <g>{removalXs}</g>
                   <g>{pieceEls}</g>
                 </svg>
               </div>
@@ -825,7 +889,12 @@ function MillsSolver() {
                   <div className="panel-label">Reading</div>
                   <div className={status.cls}>{status.content}</div>
                 </div>
-                <div className="panel-section">
+                <div className="panel-section actions">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={undo}
+                    disabled={!canUndo}
+                  >— Undo Move —</button>
                   <button className="btn" onClick={resetGame}>— Resign · New Match —</button>
                 </div>
               </aside>
