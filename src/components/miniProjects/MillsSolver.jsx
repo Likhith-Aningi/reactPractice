@@ -34,6 +34,13 @@ const MILLS = [
 const MILLS_BY_POINT = POINTS.map((_, i) => MILLS.filter(m => m.includes(i)));
 const JUNCTIONS = new Set([4, 10, 13, 19]);
 
+const DIFFICULTY = {
+  easy:   { label: "Easy",   score: 4,  placeDepth: 2, moveDepth: 3, flyDepth: 2, randomTolerance: 8 },
+  medium: { label: "Medium", score: 7,  placeDepth: 3, moveDepth: 5, flyDepth: 3, randomTolerance: 3 },
+  hard:   { label: "Hard",   score: 10, placeDepth: 4, moveDepth: 6, flyDepth: 4, randomTolerance: 0 },
+};
+const DIFFICULTY_ORDER = ["easy", "medium", "hard"];
+
 const GRAIN = [
   { x: 84, y: 120, r: 1 }, { x: 160, y: 92, r: 0.8 }, { x: 230, y: 180, r: 0.6 },
   { x: 412, y: 98, r: 1 }, { x: 490, y: 170, r: 0.8 }, { x: 118, y: 430, r: 0.9 },
@@ -180,6 +187,22 @@ const applyMove = (s, move, player) => {
   return ns;
 };
 
+const countSwingingMills = (board, player) => {
+  let count = 0;
+  for (let a = 0; a < 24; a++) {
+    if (board[a] !== player) continue;
+    if (!isInMill(board, a, player)) continue;
+    for (const b of ADJ[a]) {
+      if (board[b] !== 0) continue;
+      const tb = board.slice();
+      tb[a] = 0;
+      tb[b] = player;
+      if (formsMill(tb, b, player)) { count++; break; }
+    }
+  }
+  return count;
+};
+
 const evaluate = (s, ai, hu) => {
   if (s.winner === ai) return 100000;
   if (s.winner !== null && s.winner !== ai) return -100000;
@@ -212,6 +235,7 @@ const evaluate = (s, ai, hu) => {
     score += (Math.min(am, 30) - Math.min(hm, 30)) * 5;
     if (am === 0 && s.turn === ai) score -= 50000;
     if (hm === 0 && s.turn === hu) score += 50000;
+    score += (countSwingingMills(s.board, ai) - countSwingingMills(s.board, hu)) * 90;
   }
   for (const j of JUNCTIONS) {
     if (s.board[j] === ai) score += 8;
@@ -257,22 +281,20 @@ const minimax = (s, depth, alpha, beta, player, ai, hu) => {
   }
 };
 
-const pickDepth = (s, ai) => {
+const pickDepth = (s, ai, cfg) => {
   const phase = playerPhase(s, ai);
   if (phase === "placing") {
     const placed = s.placed[1] + s.placed[2];
-    if (placed < 4) return 3;
-    if (placed < 14) return 3;
-    return 4;
+    return placed >= 14 ? cfg.placeDepth + 1 : cfg.placeDepth;
   }
-  if (phase === "flying") return 3;
-  return 4;
+  if (phase === "flying") return cfg.flyDepth;
+  return cfg.moveDepth;
 };
 
-const chooseAIMove = (state, ai, hu) => {
+const chooseAIMove = (state, ai, hu, cfg) => {
   const moves = orderMoves(getLegalMoves(state, ai));
   if (!moves.length) return null;
-  const depth = pickDepth(state, ai);
+  const depth = pickDepth(state, ai, cfg);
   const opp = OPP[ai];
   let bestScore = -Infinity;
   const scored = [];
@@ -282,7 +304,7 @@ const chooseAIMove = (state, ai, hu) => {
     scored.push({ m, sc });
     if (sc > bestScore) bestScore = sc;
   }
-  const tol = bestScore > 9000 ? 0 : 4;
+  const tol = bestScore > 9000 ? 0 : cfg.randomTolerance;
   const top = scored.filter(x => x.sc >= bestScore - tol);
   return top[Math.floor(Math.random() * top.length)].m;
 };
@@ -301,12 +323,14 @@ const detectWinnerAfter = (board, placed, turn, currentWinner, lastPlayer) => {
 function MillsSolver() {
   const [phase, setPhase] = useState("picker");
   const [humanColor, setHumanColor] = useState(WHITE);
+  const [difficulty, setDifficulty] = useState("medium");
   const [game, setGame] = useState(newState);
   const [aiThinking, setAiThinking] = useState(false);
   const [highlightMill, setHighlightMill] = useState([]);
   const [removingPoint, setRemovingPoint] = useState(null);
   const [showOver, setShowOver] = useState(false);
   const [history, setHistory] = useState([]);
+  const cfg = DIFFICULTY[difficulty] || DIFFICULTY.medium;
 
   const stateRef = useRef(game);
   const renderedPositionsRef = useRef(new Set());
@@ -371,7 +395,7 @@ function MillsSolver() {
       }
       aiPendingRef.current = false;
       const s = stateRef.current;
-      const move = chooseAIMove(s, aiColor, humanColor);
+      const move = chooseAIMove(s, aiColor, humanColor, cfg);
       setAiThinking(false);
 
       if (!move) {
@@ -416,7 +440,7 @@ function MillsSolver() {
         });
       }
     }, 320);
-  }, [phase, game.turn, game.winner, game.mustRemove, aiColor, humanColor, removingPoint]);
+  }, [phase, game.turn, game.winner, game.mustRemove, aiColor, humanColor, removingPoint, cfg]);
 
   const startGame = (color) => {
     gameIdRef.current++;
@@ -654,6 +678,12 @@ function MillsSolver() {
     );
   }
 
+  const recentPositions = new Set();
+  for (const player of [WHITE, BLACK]) {
+    const m = game.lastMoves[player];
+    if (m && m.to != null && game.board[m.to] === player) recentPositions.add(m.to);
+  }
+
   const pieceEls = [];
   for (let i = 0; i < 24; i++) {
     const p = game.board[i];
@@ -663,6 +693,7 @@ function MillsSolver() {
     const hint = pointHint(i);
     const inMill = highlightMill.includes(i);
     const isRemoving = removingPoint === i;
+    const isRecent = recentPositions.has(i);
 
     let cls = "svg-piece";
     if (isNew) cls += " new";
@@ -677,6 +708,14 @@ function MillsSolver() {
         style={{ cursor: hint ? "pointer" : "default" }}
         onClick={() => humanClick(i)}
       >
+        {isRecent && !inMill && !isRemoving && (
+          <circle
+            cx={0} cy={0} r={20.5}
+            fill="none"
+            strokeWidth={2}
+            className="recent-halo"
+          />
+        )}
         <ellipse cx={1} cy={20} rx={17} ry={4} fill="rgba(0,0,0,0.45)" className="piece-anim" />
         <g className={`piece-anim${inMill ? " mill-glow" : ""}`}>
           <circle
@@ -780,6 +819,25 @@ function MillsSolver() {
                 <div className="lead">Choose your stones, traveller.</div>
                 <div className="note">— Ivory always opens the match —</div>
               </div>
+
+              <div className="difficulty-block">
+                <div className="difficulty-prompt">— Skill of thy adversary —</div>
+                <div className="difficulty-row">
+                  {DIFFICULTY_ORDER.map(key => (
+                    <button
+                      key={key}
+                      type="button"
+                      className={`difficulty-pill ${difficulty === key ? "active" : ""}`}
+                      onClick={() => setDifficulty(key)}
+                      aria-pressed={difficulty === key}
+                    >
+                      <span className="d-label">{DIFFICULTY[key].label}</span>
+                      <span className="d-score">{DIFFICULTY[key].score}/10</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="stone-row">
                 <button className="stone-choice" onClick={() => startGame("white")} aria-label="Play as Ivory">
                   <div className="stone-preview white"></div>
@@ -863,6 +921,13 @@ function MillsSolver() {
                 <div className="panel-section">
                   <div className="panel-label">Phase</div>
                   <div className="phase-name">{phaseLabel}</div>
+                </div>
+                <div className="panel-section">
+                  <div className="panel-label">Adversary</div>
+                  <div className="adversary-info">
+                    <span className="adversary-name">{cfg.label}</span>
+                    <span className="adversary-strength">{cfg.score}/10</span>
+                  </div>
                 </div>
                 <div className="panel-section">
                   <div className="panel-label">Stones</div>

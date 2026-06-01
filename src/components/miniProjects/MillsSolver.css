@@ -239,6 +239,86 @@
   margin-top: 4px;
 }
 
+.mills-solver .difficulty-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.mills-solver .difficulty-prompt {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+.mills-solver .difficulty-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.mills-solver .difficulty-pill {
+  background: transparent;
+  border: 1px solid rgba(201, 169, 97, 0.22);
+  color: var(--cream-dim);
+  padding: 12px 22px 14px;
+  cursor: pointer;
+  transition: var(--t);
+  font: inherit;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 112px;
+}
+.mills-solver .difficulty-pill .d-label {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.mills-solver .difficulty-pill .d-score {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+.mills-solver .difficulty-pill:hover {
+  border-color: var(--gold-soft);
+  color: var(--cream);
+}
+.mills-solver .difficulty-pill.active {
+  border-color: var(--gold);
+  background: rgba(201, 169, 97, 0.08);
+  color: var(--gold-bright);
+  box-shadow: inset 0 0 0 1px rgba(201, 169, 97, 0.14);
+}
+.mills-solver .difficulty-pill.active .d-score { color: var(--gold-bright); }
+
+.mills-solver .adversary-info {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.mills-solver .adversary-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--gold);
+  line-height: 1;
+}
+.mills-solver .adversary-strength {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cream-faint);
+}
+
 .mills-solver .rules-hint {
   max-width: 640px;
   text-align: center;
@@ -589,6 +669,20 @@
   50%      { filter: drop-shadow(0 0 10px var(--gold-bright)) drop-shadow(0 0 22px rgba(230, 197, 118, 0.8)); }
 }
 .mills-solver .mill-glow { animation: ms-goldGlow 1.3s ease-in-out infinite; }
+
+@keyframes ms-recentBreathe {
+  0%, 100% { opacity: 0.5;  transform: scale(0.96); }
+  50%      { opacity: 0.92; transform: scale(1.08); }
+}
+.mills-solver .recent-halo {
+  stroke: #fe0000;
+  stroke-opacity: 0.7;
+  filter: blur(1.5px) drop-shadow(0 0 5px rgba(230, 197, 118, 0.55));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ms-recentBreathe 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
 
 @keyframes ms-captureFade {
   0%   { opacity: 1; transform: scale(1); }
