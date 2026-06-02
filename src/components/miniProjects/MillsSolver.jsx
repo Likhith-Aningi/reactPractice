@@ -91,10 +91,11 @@ const TAUNTS = {
     "you play like you fuck — disappointing 🍆",
     "i’m the alpha, you’re the cumdump 🐺",
     "your ego just got gangbanged 👥💦",
-     "Baane aadav le subbarao inka saddey 😎💦"
+    "కూకోని ఆకేసుకోవోయ్ 😂💀",
+    "Baane aadav le subbarao inka saddey 😎💦"
   ]
 };
-const TAUNTS_QUIET = ["deliberating..","Ok not bad","good game","baane aadutunnav subbaRao.."];
+const TAUNTS_QUIET = ["deliberating..", "Ok not bad", "good game", "baane aadutunnav subbaRao.."];
 const tauntsFor = (key) => TAUNTS[key] || TAUNTS_QUIET;
 
 const GODMODE_SCORE = 80;
