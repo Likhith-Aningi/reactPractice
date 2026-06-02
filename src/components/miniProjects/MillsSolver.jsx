@@ -20,10 +20,11 @@ import {
 const DIFFICULTY = {
   easy: { label: "Easy", score: 4, placeDepth: 2, moveDepth: 3, flyDepth: 2, randomTolerance: 8 },
   medium: { label: "Medium", score: 7, placeDepth: 3, moveDepth: 5, flyDepth: 3, randomTolerance: 3 },
-  hard: { label: "Hard", score: 9, useEngine: true, maxDepth: 8, timeBudgetMs: 10000 },
-  master: { label: "Master", score: 10, useEngine: true, maxDepth: 9, timeBudgetMs: 15000 },
+  hard: { label: "Hard", score: 9, useEngine: true, maxDepth: 6, timeBudgetMs: 7000 },
+  master: { label: "Master", score: 10, useEngine: true, maxDepth: 8, timeBudgetMs: 15000 },
+  ruthless: { label: "Ruthless", score: 10, useEngine: true, maxDepth: 9, timeBudgetMs: 20000 },
 };
-const DIFFICULTY_ORDER = ["easy", "medium", "hard", "master"];
+const DIFFICULTY_ORDER = ["easy", "medium", "hard", "master", "ruthless"];
 
 const TAUNTS = {
   hard: [
@@ -96,12 +97,14 @@ const TAUNTS = {
   ]
 };
 const TAUNTS_QUIET = ["deliberating..", "Ok not bad", "good game", "baane aadutunnav subbaRao.."];
-const tauntsFor = (key) => TAUNTS[key] || TAUNTS_QUIET;
+const tauntsFor = (key) => TAUNTS[key] || TAUNTS.master || TAUNTS_QUIET;
 
-const GODMODE_SCORE = 80;
-const isGodmodeState = (difficulty, aiScore, aiPieces, huPieces) => {
-  if (difficulty !== "master") return false;
-  if (aiScore >= GODMODE_SCORE) return true;
+const GODMODE_DIFFICULTIES = new Set(["master", "ruthless"]);
+const GODMODE_SCORE = 250;
+const isGodmodeState = (difficulty, aiScore, aiPieces, huPieces, placingDone) => {
+  if (!GODMODE_DIFFICULTIES.has(difficulty)) return false;
+  if (!placingDone) return false;
+  if (aiScore >= GODMODE_SCORE && aiPieces > huPieces) return true;
   if (huPieces <= 4 && huPieces < aiPieces) return true;
   return false;
 };
@@ -132,7 +135,8 @@ function MillsSolver() {
 
   const huPieces = onBoard(game, humanColor);
   const aiPieces = onBoard(game, OPP[humanColor]);
-  const inGodmode = isGodmodeState(difficulty, aiAdvantage, aiPieces, huPieces);
+  const placingDone = game.placed[1] === 9 && game.placed[2] === 9;
+  const inGodmode = isGodmodeState(difficulty, aiAdvantage, aiPieces, huPieces, placingDone);
   const activeTaunts = inGodmode
     ? (TAUNTS.godmode || TAUNTS.master || TAUNTS_QUIET)
     : tauntsFor(difficulty);
