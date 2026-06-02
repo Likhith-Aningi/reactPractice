@@ -257,7 +257,10 @@ a.active {
   position: sticky;
   top: -60px;
   background-color: var(--bg-color);
-  z-index: 1;
+  z-index: 9998;
+  /* sit above compositor-promoted SVG/filter layers from page content */
+  isolation: isolate;
+  transform: translateZ(0);
 }
 
 .app-dark .header-wrapper {
@@ -603,8 +606,10 @@ a.active {
     width: 100vw;
     height: 100vh;
     background-color: var(--bg-color);
-    z-index: 999;
-    /* stay above everything else */
+    z-index: 9999;
+    /* stay above everything else (incl. compositor-promoted SVG/filter layers) */
+    isolation: isolate;
+    transform: translateZ(0);
     justify-content: center;
     align-items: center;
     gap: 20px;
@@ -624,7 +629,7 @@ a.active {
     position: fixed;
     top: 7%;
     left: 15px;
-    z-index: 1000;
+    z-index: 10000;
     display: block;
     cursor: pointer;
     padding: 10px;

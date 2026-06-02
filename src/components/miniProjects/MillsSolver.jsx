@@ -1,50 +1,109 @@
 import { useEffect, useRef, useState } from "react";
 import "./MillsSolver.css";
-
-const WHITE = 1, BLACK = 2;
-const OPP = { 1: 2, 2: 1 };
-
-const POINTS = [
-  [50, 50], [300, 50], [550, 50],
-  [150, 150], [300, 150], [450, 150],
-  [250, 250], [300, 250], [350, 250],
-  [50, 300], [150, 300], [250, 300],
-  [350, 300], [450, 300], [550, 300],
-  [250, 350], [300, 350], [350, 350],
-  [150, 450], [300, 450], [450, 450],
-  [50, 550], [300, 550], [550, 550],
-];
-
-const ADJ = [
-  [1, 9], [0, 2, 4], [1, 14],
-  [4, 10], [1, 3, 5, 7], [4, 13],
-  [7, 11], [4, 6, 8], [7, 12],
-  [0, 10, 21], [3, 9, 11, 18], [6, 10, 15],
-  [8, 13, 17], [5, 12, 14, 20], [2, 13, 23],
-  [11, 16], [15, 17, 19], [12, 16],
-  [10, 19], [16, 18, 20, 22], [13, 19],
-  [9, 22], [19, 21, 23], [14, 22],
-];
-
-const MILLS = [
-  [0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11], [12, 13, 14], [15, 16, 17], [18, 19, 20], [21, 22, 23],
-  [0, 9, 21], [3, 10, 18], [6, 11, 15], [1, 4, 7], [16, 19, 22], [8, 12, 17], [5, 13, 20], [2, 14, 23],
-];
-
-const MILLS_BY_POINT = POINTS.map((_, i) => MILLS.filter(m => m.includes(i)));
-const JUNCTIONS = new Set([4, 10, 13, 19]);
+import {
+  WHITE,
+  BLACK,
+  OPP,
+  POINTS,
+  MILLS,
+  MILLS_BY_POINT,
+  newState,
+  cloneGameState,
+  onBoard,
+  playerPhase,
+  formsMill,
+  canRemove,
+  getMoveTargets,
+  detectWinnerAfter,
+} from "../../services/MillsLogic.js";
 
 const DIFFICULTY = {
-  easy:   { label: "Easy",   score: 4,  placeDepth: 2, moveDepth: 3, flyDepth: 2, randomTolerance: 8 },
-  medium: { label: "Medium", score: 7,  placeDepth: 3, moveDepth: 5, flyDepth: 3, randomTolerance: 3 },
-  hard:   { label: "Hard",   score: 9,  placeDepth: 4, moveDepth: 6, flyDepth: 4, randomTolerance: 0 },
-  master: { label: "Master", score: 10, placeDepth: 5, moveDepth: 7, flyDepth: 5, randomTolerance: 0, useTT: true },
+  easy: { label: "Easy", score: 4, placeDepth: 2, moveDepth: 3, flyDepth: 2, randomTolerance: 8 },
+  medium: { label: "Medium", score: 7, placeDepth: 3, moveDepth: 5, flyDepth: 3, randomTolerance: 3 },
+  hard: { label: "Hard", score: 9, useEngine: true, maxDepth: 8, timeBudgetMs: 10000 },
+  master: { label: "Master", score: 10, useEngine: true, maxDepth: 9, timeBudgetMs: 15000 },
 };
 const DIFFICULTY_ORDER = ["easy", "medium", "hard", "master"];
 
-const TT_LIMIT = 200000;
-const stateKey = (s) =>
-  `${s.board.join("")}|${s.turn}|${s.placed[1]}|${s.placed[2]}`;
+const TAUNTS = {
+  hard: [
+    "thinking… 🤔",
+    "hmm 🤨",
+    "plotting 😏",
+    "deciding 🧠",
+    "nice try 😂",
+    "you trying? 💀",
+    "mhm 😌",
+    "let me see 👀",
+    "cute move 😆",
+    "that all you got? 🔥",
+    "you're sweating already 😅",
+    "too slow 🐢",
+    "predictable 😈",
+    "keep coping 🤡",
+    "i'm just warming up 🔥",
+    "you call that strategy? 💀",
+    "bless your heart 🙏😂"
+  ],
+  master: [
+    "plotting against you 😈",
+    "can't beat me 💪",
+    "noob 🤡",
+    "amateur hour 😂",
+    "embarrassing 💀",
+    "step aside, mortal 👑",
+    "this is too easy 😏",
+    "you call this a game? 🔥",
+    "child's play 👶",
+
+    // Vulgar & Filthy ones:
+    "i'm balls deep in your position 🍆💦",
+    "your mills are getting fucked 🍆🔥",
+    "i own your ass on the board 🍑💀",
+    "stay mad, virgin 🤡",
+    "get wrecked, bitch 🖕",
+    "i'm raping your defense 😈",
+    "you’re getting dominated like a slut 💦",
+    "my pieces are deep in your territory 🍆",
+    "cry harder, loser 😂💀",
+    "i’m skullfucking your strategy 💀",
+    "pathetic little shit 🤡",
+    "your whole board is my bitch now 🐶",
+    "keep trying, cumstain 💦",
+    "i’ll make you quit like the pussy you are 🐱",
+    "absolute fucking noob 🖕",
+    "i’m wiping the floor with your weak ass 🧹",
+    "you’re getting humiliated, boy 😭",
+    "suck my dick while I take your mills 🍆",
+    "this is a massacre, you fucking clown 🤡🔥",
+    "get fucked and removed 💀",
+    "కూకోని ఆకేసుకోవోయ్ 😂💀",
+    "your moves are as weak as your pullout game 🍆😂"
+  ],
+  godmode: [
+    "i’m violating your mills raw 🍆💦",
+    "you’re getting cucked on the board 🐂",
+    "i own every hole in your defense 😈",
+    "beg for mercy, you worthless fuck 🙏💀",
+    "your pieces are my cumrags 🧻",
+    "i’m creampieing your entire strategy 💦",
+    "die mad, skill issue 💀",
+    "you play like you fuck — disappointing 🍆",
+    "i’m the alpha, you’re the cumdump 🐺",
+    "your ego just got gangbanged 👥💦",
+     "Baane aadav le subbarao inka saddey 😎💦"
+  ]
+};
+const TAUNTS_QUIET = ["deliberating..","Ok not bad","good game","baane aadutunnav subbaRao.."];
+const tauntsFor = (key) => TAUNTS[key] || TAUNTS_QUIET;
+
+const GODMODE_SCORE = 80;
+const isGodmodeState = (difficulty, aiScore, aiPieces, huPieces) => {
+  if (difficulty !== "master") return false;
+  if (aiScore >= GODMODE_SCORE) return true;
+  if (huPieces <= 4 && huPieces < aiPieces) return true;
+  return false;
+};
 
 const GRAIN = [
   { x: 84, y: 120, r: 1 }, { x: 160, y: 92, r: 0.8 }, { x: 230, y: 180, r: 0.6 },
@@ -53,336 +112,8 @@ const GRAIN = [
   { x: 100, y: 280, r: 0.7 }, { x: 520, y: 270, r: 0.6 }, { x: 240, y: 540, r: 0.8 },
 ];
 
-const newState = () => ({
-  board: new Array(24).fill(0),
-  turn: WHITE,
-  placed: { 1: 0, 2: 0 },
-  mustRemove: false,
-  selected: null,
-  winner: null,
-  lastMoves: { 1: null, 2: null },
-  lastRemovals: { 1: null, 2: null },
-});
-
-const cloneGameState = (g) => ({
-  board: g.board.slice(),
-  turn: g.turn,
-  placed: { 1: g.placed[1], 2: g.placed[2] },
-  mustRemove: g.mustRemove,
-  selected: g.selected,
-  winner: g.winner,
-  lastMoves: {
-    1: g.lastMoves[1] ? { ...g.lastMoves[1] } : null,
-    2: g.lastMoves[2] ? { ...g.lastMoves[2] } : null,
-  },
-  lastRemovals: {
-    1: g.lastRemovals?.[1] ?? null,
-    2: g.lastRemovals?.[2] ?? null,
-  },
-});
-
-const onBoard = (s, p) => {
-  let n = 0;
-  for (let i = 0; i < 24; i++) if (s.board[i] === p) n++;
-  return n;
-};
-
-const playerPhase = (s, p) => {
-  if (s.placed[1] < 9 || s.placed[2] < 9) return "placing";
-  if (onBoard(s, p) <= 3) return "flying";
-  return "moving";
-};
-
-const isInMill = (board, point, player) => {
-  if (board[point] !== player) return false;
-  return MILLS_BY_POINT[point].some(m => m.every(p => board[p] === player));
-};
-
-const formsMill = (board, point, player) =>
-  MILLS_BY_POINT[point].some(m => m.every(p => board[p] === player));
-
-const allInMills = (board, player) => {
-  for (let i = 0; i < 24; i++) {
-    if (board[i] === player && !isInMill(board, i, player)) return false;
-  }
-  return true;
-};
-
-const canRemove = (board, point, opponent) => {
-  if (board[point] !== opponent) return false;
-  if (isInMill(board, point, opponent) && !allInMills(board, opponent)) return false;
-  return true;
-};
-
-const getMoveTargets = (s, from) => {
-  const player = s.board[from];
-  if (!player || player !== s.turn) return [];
-  const phase = playerPhase(s, player);
-  if (phase === "placing") return [];
-  if (phase === "flying") {
-    const t = [];
-    for (let i = 0; i < 24; i++) if (s.board[i] === 0) t.push(i);
-    return t;
-  }
-  return ADJ[from].filter(j => s.board[j] === 0);
-};
-
-const getLegalMoves = (s, player) => {
-  if (s.winner) return [];
-  const phase = playerPhase(s, player);
-  const opp = OPP[player];
-  const moves = [];
-  const add = (from, to) => {
-    const tb = s.board.slice();
-    if (from !== null) tb[from] = 0;
-    tb[to] = player;
-    if (formsMill(tb, to, player)) {
-      const free = [], locked = [];
-      for (let i = 0; i < 24; i++) {
-        if (tb[i] === opp) {
-          if (isInMill(tb, i, opp)) locked.push(i);
-          else free.push(i);
-        }
-      }
-      const removable = free.length ? free : locked;
-      if (removable.length === 0) moves.push({ from, to, remove: null });
-      else for (const r of removable) moves.push({ from, to, remove: r });
-    } else moves.push({ from, to, remove: null });
-  };
-  if (phase === "placing") {
-    for (let i = 0; i < 24; i++) if (s.board[i] === 0) add(null, i);
-  } else if (phase === "flying") {
-    for (let i = 0; i < 24; i++) {
-      if (s.board[i] === player) {
-        for (let j = 0; j < 24; j++) if (s.board[j] === 0) add(i, j);
-      }
-    }
-  } else {
-    for (let i = 0; i < 24; i++) {
-      if (s.board[i] === player) {
-        for (const j of ADJ[i]) if (s.board[j] === 0) add(i, j);
-      }
-    }
-  }
-  return moves;
-};
-
-const cloneForApply = (s) => ({
-  board: s.board.slice(),
-  turn: s.turn,
-  placed: { 1: s.placed[1], 2: s.placed[2] },
-  mustRemove: false,
-  selected: null,
-  winner: s.winner,
-});
-
-const applyMove = (s, move, player) => {
-  const ns = cloneForApply(s);
-  if (move.from !== null) ns.board[move.from] = 0;
-  else ns.placed[player]++;
-  ns.board[move.to] = player;
-  if (move.remove !== null) ns.board[move.remove] = 0;
-  ns.turn = OPP[player];
-  const placingDone = ns.placed[1] === 9 && ns.placed[2] === 9;
-  if (placingDone && ns.winner === null) {
-    if (onBoard(ns, WHITE) < 3) ns.winner = BLACK;
-    else if (onBoard(ns, BLACK) < 3) ns.winner = WHITE;
-    else if (getLegalMoves(ns, ns.turn).length === 0) ns.winner = player;
-  }
-  return ns;
-};
-
-const countSwingingMills = (board, player) => {
-  let count = 0;
-  for (let a = 0; a < 24; a++) {
-    if (board[a] !== player) continue;
-    if (!isInMill(board, a, player)) continue;
-    for (const b of ADJ[a]) {
-      if (board[b] !== 0) continue;
-      const tb = board.slice();
-      tb[a] = 0;
-      tb[b] = player;
-      if (formsMill(tb, b, player)) { count++; break; }
-    }
-  }
-  return count;
-};
-
-const evaluate = (s, ai, hu) => {
-  if (s.winner === ai) return 100000;
-  if (s.winner !== null && s.winner !== ai) return -100000;
-  const aiN = onBoard(s, ai), huN = onBoard(s, hu);
-  let score = (aiN - huN) * 100;
-  let aiMills = 0, huMills = 0, aiPot = 0, huPot = 0;
-  for (const m of MILLS) {
-    let ac = 0, hc = 0;
-    for (const p of m) {
-      if (s.board[p] === ai) ac++;
-      else if (s.board[p] === hu) hc++;
-    }
-    if (ac === 3) aiMills++;
-    if (hc === 3) huMills++;
-    if (ac === 2 && hc === 0) aiPot++;
-    if (hc === 2 && ac === 0) huPot++;
-  }
-  score += (aiMills - huMills) * 60;
-  score += (aiPot - huPot) * 16;
-  if (s.placed[1] === 9 && s.placed[2] === 9) {
-    let am = 0, hm = 0;
-    if (aiN === 3) am = 30;
-    else for (let i = 0; i < 24; i++) {
-      if (s.board[i] === ai) am += ADJ[i].filter(j => s.board[j] === 0).length;
-    }
-    if (huN === 3) hm = 30;
-    else for (let i = 0; i < 24; i++) {
-      if (s.board[i] === hu) hm += ADJ[i].filter(j => s.board[j] === 0).length;
-    }
-    score += (Math.min(am, 30) - Math.min(hm, 30)) * 5;
-    if (am === 0 && s.turn === ai) score -= 50000;
-    if (hm === 0 && s.turn === hu) score += 50000;
-    score += (countSwingingMills(s.board, ai) - countSwingingMills(s.board, hu)) * 90;
-  }
-  for (const j of JUNCTIONS) {
-    if (s.board[j] === ai) score += 8;
-    else if (s.board[j] === hu) score -= 8;
-  }
-  return score;
-};
-
-const orderMoves = (moves) => {
-  moves.sort((a, b) => {
-    const am = a.remove !== null ? 1 : 0;
-    const bm = b.remove !== null ? 1 : 0;
-    if (am !== bm) return bm - am;
-    const aj = JUNCTIONS.has(a.to) ? 1 : 0;
-    const bj = JUNCTIONS.has(b.to) ? 1 : 0;
-    return bj - aj;
-  });
-  return moves;
-};
-
-const minimax = (s, depth, alpha, beta, player, ai, hu) => {
-  if (depth === 0 || s.winner !== null) return evaluate(s, ai, hu);
-  const moves = orderMoves(getLegalMoves(s, player));
-  if (moves.length === 0) return player === ai ? -100000 : 100000;
-  if (player === ai) {
-    let best = -Infinity;
-    for (const m of moves) {
-      const sc = minimax(applyMove(s, m, player), depth - 1, alpha, beta, OPP[player], ai, hu);
-      if (sc > best) best = sc;
-      if (best > alpha) alpha = best;
-      if (beta <= alpha) break;
-    }
-    return best;
-  } else {
-    let best = Infinity;
-    for (const m of moves) {
-      const sc = minimax(applyMove(s, m, player), depth - 1, alpha, beta, OPP[player], ai, hu);
-      if (sc < best) best = sc;
-      if (best < beta) beta = best;
-      if (beta <= alpha) break;
-    }
-    return best;
-  }
-};
-
-const TT_EXACT = 0, TT_LOWER = 1, TT_UPPER = 2;
-
-const minimaxTT = (s, depth, alpha, beta, player, ai, hu, tt) => {
-  const origAlpha = alpha, origBeta = beta;
-  const key = stateKey(s);
-  const entry = tt.get(key);
-  if (entry && entry.depth >= depth) {
-    if (entry.flag === TT_EXACT) return entry.score;
-    if (entry.flag === TT_LOWER) { if (entry.score > alpha) alpha = entry.score; }
-    else if (entry.flag === TT_UPPER) { if (entry.score < beta) beta = entry.score; }
-    if (alpha >= beta) return entry.score;
-  }
-  if (depth === 0 || s.winner !== null) return evaluate(s, ai, hu);
-
-  const moves = orderMoves(getLegalMoves(s, player));
-  if (moves.length === 0) return player === ai ? -100000 : 100000;
-
-  if (entry && entry.bestMove) {
-    const bm = entry.bestMove;
-    for (let i = 1; i < moves.length; i++) {
-      const m = moves[i];
-      if (m.from === bm.from && m.to === bm.to && m.remove === bm.remove) {
-        moves[i] = moves[0];
-        moves[0] = m;
-        break;
-      }
-    }
-  }
-
-  let bestMove = null;
-  let best;
-  if (player === ai) {
-    best = -Infinity;
-    for (const m of moves) {
-      const sc = minimaxTT(applyMove(s, m, player), depth - 1, alpha, beta, OPP[player], ai, hu, tt);
-      if (sc > best) { best = sc; bestMove = m; }
-      if (best > alpha) alpha = best;
-      if (beta <= alpha) break;
-    }
-  } else {
-    best = Infinity;
-    for (const m of moves) {
-      const sc = minimaxTT(applyMove(s, m, player), depth - 1, alpha, beta, OPP[player], ai, hu, tt);
-      if (sc < best) { best = sc; bestMove = m; }
-      if (best < beta) beta = best;
-      if (beta <= alpha) break;
-    }
-  }
-
-  if (tt.size < TT_LIMIT) {
-    const flag = best <= origAlpha ? TT_UPPER : best >= origBeta ? TT_LOWER : TT_EXACT;
-    tt.set(key, { depth, score: best, flag, bestMove });
-  }
-  return best;
-};
-
-const pickDepth = (s, ai, cfg) => {
-  const phase = playerPhase(s, ai);
-  if (phase === "placing") {
-    const placed = s.placed[1] + s.placed[2];
-    return placed >= 14 ? cfg.placeDepth + 1 : cfg.placeDepth;
-  }
-  if (phase === "flying") return cfg.flyDepth;
-  return cfg.moveDepth;
-};
-
-const chooseAIMove = (state, ai, hu, cfg) => {
-  const moves = orderMoves(getLegalMoves(state, ai));
-  if (!moves.length) return null;
-  const depth = pickDepth(state, ai, cfg);
-  const opp = OPP[ai];
-  const tt = cfg.useTT ? new Map() : null;
-  let bestScore = -Infinity;
-  const scored = [];
-  for (const m of moves) {
-    const ns = applyMove(state, m, ai);
-    const sc = tt
-      ? minimaxTT(ns, depth - 1, -Infinity, Infinity, opp, ai, hu, tt)
-      : minimax(ns, depth - 1, -Infinity, Infinity, opp, ai, hu);
-    scored.push({ m, sc });
-    if (sc > bestScore) bestScore = sc;
-  }
-  const tol = bestScore > 9000 ? 0 : cfg.randomTolerance;
-  const top = scored.filter(x => x.sc >= bestScore - tol);
-  return top[Math.floor(Math.random() * top.length)].m;
-};
-
-const detectWinnerAfter = (board, placed, turn, currentWinner, lastPlayer) => {
-  if (currentWinner !== null) return currentWinner;
-  const placingDone = placed[1] === 9 && placed[2] === 9;
-  if (!placingDone) return null;
-  const trial = { board, placed, turn, winner: null };
-  if (onBoard(trial, WHITE) < 3) return BLACK;
-  if (onBoard(trial, BLACK) < 3) return WHITE;
-  if (getLegalMoves(trial, turn).length === 0) return lastPlayer;
-  return null;
-};
+const createEngineWorker = () =>
+  new Worker(new URL("../../services/MillsEngine.worker.js", import.meta.url), { type: "module" });
 
 function MillsSolver() {
   const [phase, setPhase] = useState("picker");
@@ -394,17 +125,56 @@ function MillsSolver() {
   const [removingPoint, setRemovingPoint] = useState(null);
   const [showOver, setShowOver] = useState(false);
   const [history, setHistory] = useState([]);
+  const [tauntIndex, setTauntIndex] = useState(0);
+  const [aiAdvantage, setAiAdvantage] = useState(0);
   const cfg = DIFFICULTY[difficulty] || DIFFICULTY.medium;
+
+  const huPieces = onBoard(game, humanColor);
+  const aiPieces = onBoard(game, OPP[humanColor]);
+  const inGodmode = isGodmodeState(difficulty, aiAdvantage, aiPieces, huPieces);
+  const activeTaunts = inGodmode
+    ? (TAUNTS.godmode || TAUNTS.master || TAUNTS_QUIET)
+    : tauntsFor(difficulty);
 
   const stateRef = useRef(game);
   const renderedPositionsRef = useRef(new Set());
   const inputLockedRef = useRef(false);
   const aiPendingRef = useRef(false);
   const gameIdRef = useRef(0);
+  const workerRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   const aiColor = OPP[humanColor];
 
   useEffect(() => { stateRef.current = game; }, [game]);
+
+  useEffect(() => {
+    workerRef.current = createEngineWorker();
+    return () => {
+      workerRef.current?.terminate();
+      workerRef.current = null;
+    };
+  }, []);
+
+  const cancelAndRecreateWorker = () => {
+    workerRef.current?.terminate();
+    workerRef.current = createEngineWorker();
+  };
+
+  useEffect(() => {
+    if (!aiThinking) return;
+    const list = activeTaunts;
+    setTauntIndex(Math.floor(Math.random() * list.length));
+    const id = setInterval(() => {
+      setTauntIndex(i => {
+        if (list.length <= 1) return 0;
+        let next;
+        do { next = Math.floor(Math.random() * list.length); } while (next === i);
+        return next;
+      });
+    }, 5200);
+    return () => clearInterval(id);
+  }, [aiThinking, activeTaunts]);
 
   useEffect(() => {
     const occ = new Set();
@@ -447,21 +217,31 @@ function MillsSolver() {
     if (game.mustRemove) return;
     if (removingPoint !== null) return;
     if (aiPendingRef.current) return;
+    if (!workerRef.current) return;
 
     aiPendingRef.current = true;
     setAiThinking(true);
     const myGameId = gameIdRef.current;
+    const worker = workerRef.current;
+    const requestId = ++requestIdRef.current;
 
-    setTimeout(() => {
-      if (gameIdRef.current !== myGameId) {
+    const handler = (e) => {
+      const data = e.data || {};
+      if (data.requestId !== requestId) return;
+      worker.removeEventListener("message", handler);
+      if (gameIdRef.current !== myGameId || workerRef.current !== worker) {
         aiPendingRef.current = false;
+        setAiThinking(false);
         return;
       }
       aiPendingRef.current = false;
-      const s = stateRef.current;
-      const move = chooseAIMove(s, aiColor, humanColor, cfg);
       setAiThinking(false);
+      if (typeof data.score === "number" && Number.isFinite(data.score)) {
+        setAiAdvantage(data.score);
+      }
 
+      const s = stateRef.current;
+      const move = data.move;
       if (!move) {
         setGame({ ...s, winner: humanColor });
         return;
@@ -503,7 +283,31 @@ function MillsSolver() {
           winner,
         });
       }
-    }, 320);
+    };
+    worker.addEventListener("message", handler);
+
+    const t = setTimeout(() => {
+      if (gameIdRef.current !== myGameId || workerRef.current !== worker) {
+        worker.removeEventListener("message", handler);
+        aiPendingRef.current = false;
+        setAiThinking(false);
+        return;
+      }
+      const snap = stateRef.current;
+      worker.postMessage({
+        type: "choose",
+        requestId,
+        state: snap,
+        ai: aiColor,
+        hu: humanColor,
+        cfg: { ...cfg },
+      });
+    }, 280);
+
+    return () => {
+      clearTimeout(t);
+      worker.removeEventListener("message", handler);
+    };
   }, [phase, game.turn, game.winner, game.mustRemove, aiColor, humanColor, removingPoint, cfg]);
 
   const startGame = (color) => {
@@ -511,6 +315,7 @@ function MillsSolver() {
     aiPendingRef.current = false;
     inputLockedRef.current = false;
     renderedPositionsRef.current = new Set();
+    cancelAndRecreateWorker();
     setHumanColor(color === "white" ? WHITE : BLACK);
     setGame(newState());
     setAiThinking(false);
@@ -518,6 +323,7 @@ function MillsSolver() {
     setRemovingPoint(null);
     setShowOver(false);
     setHistory([]);
+    setAiAdvantage(0);
     setPhase("game");
   };
 
@@ -525,9 +331,11 @@ function MillsSolver() {
     gameIdRef.current++;
     aiPendingRef.current = false;
     inputLockedRef.current = false;
+    cancelAndRecreateWorker();
     setPhase("picker");
     setShowOver(false);
     setAiThinking(false);
+    setAiAdvantage(0);
     setHighlightMill([]);
     setRemovingPoint(null);
     setHistory([]);
@@ -818,9 +626,17 @@ function MillsSolver() {
     return ph.charAt(0).toUpperCase() + ph.slice(1);
   })();
 
+  const currentTaunt = activeTaunts[tauntIndex % activeTaunts.length];
+  const aiTauntChip = (
+    <span className={`ai-taunt ai-taunt--${inGodmode ? "godmode" : difficulty}`}>
+      <span className="ai-taunt-dots"><i /><i /><i /></span>
+      <span className="ai-taunt-text">{currentTaunt}</span>
+    </span>
+  );
+
   const turnSub = (() => {
     if (game.winner) return game.winner === game.turn ? "victor" : "defeated";
-    if (aiThinking) return <span className="thinking-indicator">deliberating</span>;
+    if (aiThinking) return aiTauntChip;
     if (game.turn === humanColor) return "your turn";
     return "adversary";
   })();
@@ -847,7 +663,7 @@ function MillsSolver() {
         return { cls: "status-msg", content: <>You may <em>fly</em> — select a stone, then any open point.</> };
       return { cls: "status-msg", content: "Select a stone, then slide to an adjacent point." };
     }
-    return { cls: "status-msg", content: <span className="thinking-indicator">opponent deliberates</span> };
+    return { cls: "status-msg", content: aiTauntChip };
   })();
 
   const overTitle = game.winner === humanColor

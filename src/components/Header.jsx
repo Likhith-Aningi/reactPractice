@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import Moon from "../assets/moon.svg";
@@ -12,6 +12,12 @@ function Header() {
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
+
+  useEffect(() => {
+    if (showMenu) document.body.classList.add("menu-open");
+    else document.body.classList.remove("menu-open");
+    return () => document.body.classList.remove("menu-open");
+  }, [showMenu]);
   const handleThemeChange = (e) => {
     let chek = e.target.checked ? "dark" : "light";
     setTheme(chek);
